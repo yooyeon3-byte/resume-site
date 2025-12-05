@@ -11,6 +11,8 @@
     </div>
 
     <div class="card">
+    </div>
+</th:block>
 
         <form th:action="${resumeForm.id == null ? '/resumes' : '/resumes/' + resumeForm.id}"
               method="post" th:object="${resumeForm}">
