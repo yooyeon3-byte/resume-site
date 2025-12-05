@@ -27,9 +27,33 @@ public class ResumeController {
         return "resume/my-list";
     }
 
-    @GetMapping("/new")
-    public String newForm(Model model) {
-        model.addAttribute("resumeForm", new ResumeForm());
+    // ⭐ 기존 newForm과 editForm을 대체하는 통합 폼 메소드
+    @GetMapping({"/new", "/{id}/edit"}) // /resumes/new 또는 /resumes/{id}/edit 모두 처리
+    public String form(Model model,
+                       // /new 경로에서는 id가 없으므로 required = false
+                       @PathVariable(required = false) Long id,
+                       @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        if (id != null) {
+            // 이력서 수정 시: 기존 editForm의 로직 사용
+            var resume = resumeService.findById(id);
+
+            // 소유자 검증
+            if (!resume.getOwner().getId().equals(userDetails.getUser().getId())) {
+                return "redirect:/resumes"; // 권한 없음
+            }
+
+            // Resume 엔티티를 ResumeForm DTO로 변환 (기존 로직 유지)
+            ResumeForm form = new ResumeForm();
+            form.setId(resume.getId());
+            form.setTitle(resume.getTitle());
+            form.setContent(resume.getContent());
+            model.addAttribute("resumeForm", form);
+
+        } else {
+            // 새 이력서 작성 시: /resumes/new 로 접속
+            model.addAttribute("resumeForm", new ResumeForm());
+        }
         return "resume/form";
     }
 
@@ -44,22 +68,7 @@ public class ResumeController {
         return "redirect:/resumes";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id,
-                           @AuthenticationPrincipal CustomUserDetails userDetails,
-                           Model model) {
-        var resume = resumeService.findById(id);
-        if (!resume.getOwner().getId().equals(userDetails.getUser().getId())) {
-            return "redirect:/resumes";
-        }
-        ResumeForm form = new ResumeForm();
-        form.setId(resume.getId());
-        form.setTitle(resume.getTitle());
-        form.setContent(resume.getContent());
-        model.addAttribute("resumeForm", form);
-        return "resume/form";
-    }
-
+    // ⭐ update 메소드의 매핑은 /resumes/{id}로 유지 (POST)
     @PostMapping("/{id}")
     public String update(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @PathVariable Long id,
