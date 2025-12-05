@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="fragments/layout :: content">
-<body>
-<div class="card auth-card">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"> <body>
+<th:block layout:fragment="content"> <div class="card auth-card">
     <h2>로그인</h2>
     <form th:action="@{/login}" method="post">
         <label>아이디
@@ -15,5 +15,6 @@
     </form>
     <p class="muted">계정이 없나요? <a th:href="@{/signup}">회원가입</a></p>
 </div>
+</th:block>
 </body>
 </html>

@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="fragments/layout :: content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
 <body>
-<div class="card">
-    <h2 th:text="${resume.title}">제목</h2>
-    <p class="muted">
-        작성자: <span th:text="${resume.owner.name}"></span>
-        (<span th:text="${resume.owner.username}"></span>)
-    </p>
-    <p class="muted" th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></p>
-    <hr>
-    <pre class="resume-content" th:text="${resume.content}"></pre>
+<th:block layout:fragment="content">
+    <div class="card">
+        <h2 th:text="${resume.title}">제목</h2>
+        <p class="muted">
+            작성자: <span th:text="${resume.owner.name}"></span>
+            (<span th:text="${resume.owner.username}"></span>)
+        </p>
+        <p class="muted" th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></p>
+        <hr>
+        <pre class="resume-content" th:text="${resume.content}"></pre>
 
-    <div class="card-actions right">
-        <a th:href="@{/admin/resumes}" class="btn-outline">목록으로</a>
+        <div class="card-actions right">
+            <a th:href="@{/admin/resumes}" class="btn-outline">목록으로</a>
+        </div>
     </div>
-</div>
+</th:block>
 </body>
 </html>

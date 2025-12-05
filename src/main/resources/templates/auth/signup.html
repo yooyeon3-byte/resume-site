@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="fragments/layout :: content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
 <body>
-<div class="card auth-card">
-    <h2>회원가입</h2>
+<th:block layout:fragment="content">
+    <div class="card auth-card">
+        <h2>회원가입</h2>
 
-    <div class="error" th:if="${errorMessage}"
-         th:text="${errorMessage}"></div>
+        <div class="error" th:if="${errorMessage}"
+             th:text="${errorMessage}"></div>
 
-    <form th:action="@{/signup}" method="post" th:object="${userSignupDto}">
-        <label>아이디
-            <input type="text" th:field="*{username}">
-        </label>
-        <label>이름
-            <input type="text" th:field="*{name}">
-        </label>
-        <label>이메일
-            <input type="email" th:field="*{email}">
-        </label>
-        <label>비밀번호
-            <input type="password" th:field="*{password}">
-        </label>
-        <label>비밀번호 확인
-            <input type="password" th:field="*{confirmPassword}">
-        </label>
+        <form th:action="@{/signup}" method="post" th:object="${userSignupDto}">
+            <label>아이디
+                <input type="text" th:field="*{username}">
+            </label>
+            <label>이름
+                <input type="text" th:field="*{name}">
+            </label>
+            <label>이메일
+                <input type="email" th:field="*{email}">
+            </label>
+            <label>비밀번호
+                <input type="password" th:field="*{password}">
+            </label>
+            <label>비밀번호 확인
+                <input type="password" th:field="*{confirmPassword}">
+            </label>
 
-        <button class="btn-primary full" type="submit">가입하기</button>
-    </form>
-</div>
+            <button class="btn-primary full" type="submit">가입하기</button>
+        </form>
+    </div>
+</th:block>
 </body>
 </html>
