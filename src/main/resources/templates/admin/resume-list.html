@@ -1,32 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="fragments/layout :: content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
 <body>
-<div class="page-header">
-    <h2>전체 이력서 목록 (관리자)</h2>
-</div>
+<th:block layout:fragment="content">
+    <div class="page-header">
+        <h2>전체 이력서 목록 (관리자)</h2>
+    </div>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>작성일</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="resume : ${resumes}">
-        <td th:text="${resume.id}"></td>
-        <td th:text="${resume.title}"></td>
-        <td th:text="${resume.owner.name}"></td>
-        <td th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
-        <td>
-            <a th:href="@{'/admin/resumes/' + ${resume.id}}" class="btn-outline small">상세</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="resume : ${resumes}">
+            <td th:text="${resume.id}"></td>
+            <td th:text="${resume.title}"></td>
+            <td th:text="${resume.owner.name}"></td>
+            <td th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+            <td>
+                <a th:href="@{'/admin/resumes/' + ${resume.id}}" class="btn-outline small">상세</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</th:block>
 </body>
 </html>

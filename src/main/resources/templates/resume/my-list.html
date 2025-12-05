@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="fragments/layout :: content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
 <body>
-<div class="page-header">
-    <h2>내 이력서</h2>
-    <a th:href="@{/resumes/new}" class="btn-primary">새 이력서 작성</a>
-</div>
+<th:block layout:fragment="content">
+    <div class="page-header">
+        <h2>내 이력서</h2>
+        <a th:href="@{/resumes/new}" class="btn-primary">새 이력서 작성</a>
+    </div>
 
-<div class="grid">
-    <div class="card" th:each="resume : ${resumes}">
-        <h3 th:text="${resume.title}">제목</h3>
-        <p class="muted" th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></p>
-        <p class="resume-preview"
-           th:text="${#strings.abbreviate(resume.content, 120)}"></p>
+    <div class="grid">
+        <div class="card" th:each="resume : ${resumes}">
+            <h3 th:text="${resume.title}">제목</h3>
+            <p class="muted" th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></p>
+            <p class="resume-preview"
+               th:text="${#strings.abbreviate(resume.content, 120)}"></p>
 
-        <div class="card-actions">
-            <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline">수정</a>
-            <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
-                  onsubmit="return confirm('삭제할까요?');">
-                <button class="btn-danger" type="submit">삭제</button>
-            </form>
+            <div class="card-actions">
+                <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline">수정</a>
+                <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
+                      onsubmit="return confirm('삭제할까요?');">
+                    <button class="btn-danger" type="submit">삭제</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<div th:if="${#lists.isEmpty(resumes)}" class="empty">
-    아직 등록된 이력서가 없습니다. <a th:href="@{/resumes/new}">첫 이력서를 작성해보세요.</a>
-</div>
+    <div th:if="${#lists.isEmpty(resumes)}" class="empty">
+        아직 등록된 이력서가 없습니다. <a th:href="@{/resumes/new}">첫 이력서를 작성해보세요.</a>
+    </div>
+</th:block>
 </body>
 </html>
