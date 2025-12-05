@@ -6,6 +6,7 @@
     /* Professional Color Palette (Deep Blue/Indigo) */
     --color-primary: #1e3a8a;       /* Deep Indigo */
     --color-primary-light: #3b82f6; /* Accent Blue */
+    --color-accent-teal: #06b6d4;   /* ⭐ NEW: Bright Teal for main buttons */
     --color-background: #ffffff;
     --color-page-bg: #f8fafc;       /* Light Gray Background */
     --color-text: #1f2937;
@@ -73,7 +74,7 @@ a:hover {
     font-size: 14px;
     padding: 6px 12px;
     border-radius: 6px;
-    color: var(--color-text);
+    color: var(--color-text); /* Default: Dark Gray */
     transition: background 0.2s, color 0.2s;
 }
 
@@ -81,6 +82,13 @@ a:hover {
     background: var(--color-border);
     color: var(--color-text);
 }
+
+/* ⭐ Fix 3: 로그인 후 우측 상단 링크 색상을 Primary로 강조 */
+.nav-link.active-link {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
 
 .container {
     max-width: 1000px;
@@ -102,6 +110,34 @@ a:hover {
     font-weight: 600;
 }
 
+/* ⭐ HERO 섹션: 겹침 문제 최종 해결 (이전 단계에서 수정) */
+.hero {
+    text-align: center;
+    padding: 120px 20px;
+}
+
+.hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: var(--color-text-subtle);
+    margin-bottom: 50px;
+    white-space: normal;
+    line-height: 1.5;
+}
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 0;
+}
+
+
 /* ========================================================= */
 /* BUTTONS & FORMS                         */
 /* ========================================================= */
@@ -120,12 +156,13 @@ a:hover {
 }
 
 .btn-primary {
-    background-color: var(--color-primary);
+    /* ⭐ Fix 2: '새 이력서 작성' 버튼을 Teal 액센트 색상으로 변경하여 눈에 띄게 함 */
+    background-color: var(--color-accent-teal);
     color: white;
 }
 .btn-primary:hover {
-    background-color: #1e40af; /* Darker shade on hover */
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+    background-color: #0d9488; /* Darker teal on hover */
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
     transform: translateY(-1px);
 }
 
@@ -226,9 +263,9 @@ textarea {
 }
 
 .muted {
-    font-size: 12px;
+    font-size: 14px; /* Fix: 12px -> 14px로 증가 */
     color: var(--color-text-subtle);
-    margin-top: 4px;
+    margin-top: 15px;
 }
 
 .card-actions {
@@ -261,6 +298,17 @@ textarea {
     margin-top: 4px;
     margin-bottom: 0;
     font-weight: 500;
+}
+
+/* ⭐ Fix 1: 이력서 목록 페이지 '아직 등록된 이력서가 없습니다.' 텍스트 대비 개선 */
+.empty {
+    text-align: center;
+    color: var(--color-text); /* 텍스트를 어둡게 변경 */
+    font-weight: 500;
+}
+.empty a {
+    color: var(--color-primary-light); /* 링크 색상을 밝은 Accent Blue로 변경 */
+    font-weight: 600;
 }
 
 .footer {
