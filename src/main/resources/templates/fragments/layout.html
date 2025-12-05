@@ -1,40 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 <head>
     <meta charset="UTF-8">
     <title th:text="${pageTitle} ?: 'Resume Hub'">Resume Hub</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Live Reload (개발용 선택) -->
+    <script src="http://localhost:35729/livereload.js"></script>
+
+    <!-- Custom CSS fragment -->
+    <th:block layout:fragment="css"></th:block>
 </head>
+
 <body>
-<header class="navbar">
-    <div class="nav-left">
-        <a th:href="@{/' }" class="logo">Resume<span>Hub</span></a>
-    </div>
-    <nav class="nav-right">
-        <a th:href="@{/}" class="nav-link">홈</a>
-        <a th:href="@{/resumes}" class="nav-link"
-           th:if="${#authorization.expression('isAuthenticated()')}">내 이력서</a>
-        <a th:href="@{/admin/resumes}" class="nav-link"
-           th:if="${#authorization.expression('hasRole(''ADMIN'')')}">관리자</a>
 
-        <a th:href="@{/login}" class="btn-outline"
-           th:if="${#authorization.expression('isAnonymous()')}">로그인</a>
-        <a th:href="@{/signup}" class="btn-primary"
-           th:if="${#authorization.expression('isAnonymous()')}">회원가입</a>
+<!-- ⭐ Header Fragment -->
+<div th:replace="~{fragments/header :: header}"></div>
 
-        <form th:action="@{/logout}" method="post"
-              th:if="${#authorization.expression('isAuthenticated()')}">
-            <button class="btn-outline" type="submit">로그아웃</button>
-        </form>
-    </nav>
-</header>
-
-<main class="container">
-    <div th:insert="~{::content}"></div>
+<!-- ⭐ 본문 영역 -->
+<main class="container mt-4">
+    <th:block layout:fragment="content"></th:block>
 </main>
 
-<footer class="footer">
-    © 2025 ResumeHub. All rights reserved.
-</footer>
+<!-- ⭐ Footer Fragment -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- JS -->
+<script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+
+<!-- Custom Script Fragment -->
+<th:block layout:fragment="script"></th:block>
+
 </body>
 </html>

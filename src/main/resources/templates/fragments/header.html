@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="logo">Resume<span>Hub</span></a>
+    </div>
+    <nav class="nav-right">
+        <a th:href="@{/}" class="nav-link">홈</a>
+        <a th:href="@{/resumes}" class="nav-link"
+           th:if="${#authorization.expression('isAuthenticated()')}">내 이력서</a>
+        <a th:href="@{/admin/resumes}" class="nav-link"
+           th:if="${#authorization.expression('hasRole(''ADMIN'')')}">관리자</a>
+
+        <a th:href="@{/login}" class="btn-outline"
+           th:if="${#authorization.expression('isAnonymous()')}">로그인</a>
+        <a th:href="@{/signup}" class="btn-primary"
+           th:if="${#authorization.expression('isAnonymous()')}">회원가입</a>
+
+        <form th:action="@{/logout}" method="post"
+              th:if="${#authorization.expression('isAuthenticated()')}">
+            <button class="btn-outline" type="submit">로그아웃</button>
+        </form>
+    </nav>
+</header>
+</body>
+</html>
