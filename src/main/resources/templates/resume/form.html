@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="fragments/layout :: content">
+<body>
+<div class="card">
+    <h2 th:text="${#fields.hasErrors('*') ? '입력을 다시 확인해주세요' : '이력서 작성'}"></h2>
+
+    <form th:action="${#lists.isEmpty(#request.parameterMap['id']) ? '/resumes' : '/resumes/' + ${resumeForm.id}}"
+          method="post" th:object="${resumeForm}">
+        <label>제목
+            <input type="text" th:field="*{title}">
+        </label>
+        <label>내용
+            <textarea th:field="*{content}" rows="12"
+                      placeholder="경력, 사용 기술, 프로젝트, 자기소개 등을 자유롭게 작성하세요."></textarea>
+        </label>
+        <button class="btn-primary full" type="submit">저장하기</button>
+    </form>
+</div>
+</body>
+</html>
