@@ -4,6 +4,7 @@ import com.example.resumesite.domain.Resume;
 import com.example.resumesite.domain.User;
 import com.example.resumesite.dto.ResumeForm;
 import com.example.resumesite.repository.ResumeRepository;
+import com.example.resumesite.repository.UserRepository; // ⭐ UserRepository 임포트 추가
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +17,18 @@ import java.util.List;
 public class ResumeService {
 
     private final ResumeRepository resumeRepository;
+    private final UserRepository userRepository; // ⭐ UserRepository 필드 추가
+
 
     public Resume create(User owner, ResumeForm form) {
+        // ⭐ 수정: owner(로그인 사용자)를 ID로 다시 조회하여 Managed Entity로 만듭니다.
+        User managedOwner = userRepository.findById(owner.getId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
         Resume resume = Resume.builder()
                 .title(form.getTitle())
                 .content(form.getContent())
-                .owner(owner)
+                .owner(managedOwner) // ⭐ Managed Entity 사용
                 .build();
         return resumeRepository.save(resume);
     }
@@ -32,6 +39,12 @@ public class ResumeService {
         if (!resume.getOwner().getId().equals(owner.getId())) {
             throw new IllegalStateException("본인 이력서만 수정할 수 있습니다.");
         }
+
+        // ⭐ update 시에도 Managed Entity 사용
+        User managedOwner = userRepository.findById(owner.getId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        resume.getOwner().setId(managedOwner.getId()); // owner 필드는 변경되지 않지만, 관계의 안전성 확보
         resume.setTitle(form.getTitle());
         resume.setContent(form.getContent());
         return resume;

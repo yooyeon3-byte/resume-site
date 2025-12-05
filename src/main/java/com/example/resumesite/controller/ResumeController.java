@@ -27,13 +27,14 @@ public class ResumeController {
         return "resume/my-list";
     }
 
+    // ⭐ 새 이력서 작성 (GET /resumes/new)
     @GetMapping("/new")
     public String newForm(Model model) {
-        // 새 이력서 작성 시에는 빈 DTO 객체만 모델에 담아 템플릿에 전달합니다.
         model.addAttribute("resumeForm", new ResumeForm());
         return "resume/form";
     }
 
+    // ⭐ 이력서 생성 처리 (POST /resumes)
     @PostMapping
     public String create(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @Valid @ModelAttribute ResumeForm form,
@@ -45,7 +46,8 @@ public class ResumeController {
         return "redirect:/resumes";
     }
 
-    @GetMapping("/{id}/edit") // ⭐ 수정된 메소드 (from() 사용)
+    // ⭐ 이력서 수정 폼 (GET /resumes/{id}/edit)
+    @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id,
                            @AuthenticationPrincipal CustomUserDetails userDetails,
                            Model model) {
@@ -53,16 +55,17 @@ public class ResumeController {
 
         // 소유자 검증
         if (!resume.getOwner().getId().equals(userDetails.getUser().getId())) {
-            return "redirect:/resumes"; // 권한 없음
+            return "redirect:/resumes";
         }
 
-        // ResumeForm.from()을 사용하여 Resume 엔티티를 DTO로 변환
+        // ResumeForm.from()을 사용하여 DTO 생성
         ResumeForm form = ResumeForm.from(resume);
 
         model.addAttribute("resumeForm", form);
         return "resume/form";
     }
 
+    // ⭐ 이력서 수정 처리 (POST /resumes/{id})
     @PostMapping("/{id}")
     public String update(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @PathVariable Long id,
