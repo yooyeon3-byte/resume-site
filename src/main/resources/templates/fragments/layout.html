@@ -8,7 +8,7 @@
 <body>
 <header class="navbar">
     <div class="nav-left">
-        <a th:href="@{/' }" class="logo">Resume<span>Hub</span></a>
+        <a th:href="@{/}" class="logo">Resume<span>Hub</span></a>
     </div>
     <nav class="nav-right">
         <a th:href="@{/}" class="nav-link">홈</a>
@@ -30,7 +30,8 @@
 </header>
 
 <main class="container">
-    <div th:insert="~{::content}"></div>
+    <div th:fragment="content">
+    </div>
 </main>
 
 <footer class="footer">
