@@ -1,10 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="ko">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ko">
 <head>
+    <meta charset="UTF-8">
+    <title layout:title-default="Resume Site">Resume Site</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 <header class="navbar">
+    <div class="logo">
+        <a th:href="@{/}">Resume<span>Site</span></a>
+    </div>
+    <div class="nav-right">
+        <th:block sec:authorize="isAuthenticated()">
+            <span class="nav-link" th:text="${#authentication.name} + '님'">사용자명님</span>
+            <a th:href="@{/resumes}" class="nav-link">내 이력서</a>
+            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/resumes}" class="nav-link">관리자</a>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="nav-link btn-outline small">로그아웃</button>
+            </form>
+        </th:block>
+        <th:block sec:authorize="isAnonymous()">
+            <a th:href="@{/login}" class="nav-link">로그인</a>
+            <a th:href="@{/signup}" class="nav-link btn-primary small">회원가입</a>
+        </th:block>
+    </div>
 </header>
 
 <main class="container">
