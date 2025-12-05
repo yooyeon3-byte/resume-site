@@ -20,19 +20,23 @@ public class ResumeService {
     private final UserRepository userRepository; // ⭐ UserRepository 필드 추가
 
 
+    // ⭐ create 메소드 수정
     public Resume create(User owner, ResumeForm form) {
-        // ⭐ 수정: owner(로그인 사용자)를 ID로 다시 조회하여 Managed Entity로 만듭니다.
-        User managedOwner = userRepository.findById(owner.getId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
         Resume resume = Resume.builder()
                 .title(form.getTitle())
-                .content(form.getContent())
-                .owner(managedOwner) // ⭐ Managed Entity 사용
+                // ⭐ 신규 필드 매핑
+                .personalContact(form.getPersonalContact())
+                .educationHistory(form.getEducationHistory())
+                .experienceHistory(form.getExperienceHistory())
+                .certificationsAndSkills(form.getCertificationsAndSkills())
+                .selfIntroduction(form.getSelfIntroduction())
+
+                .owner(owner) // (혹은 ManagedOwner)
                 .build();
         return resumeRepository.save(resume);
     }
 
+    // ⭐ update 메소드 수정
     public Resume update(User owner, ResumeForm form) {
         Resume resume = resumeRepository.findById(form.getId())
                 .orElseThrow(() -> new IllegalArgumentException("이력서를 찾을 수 없습니다."));
@@ -44,9 +48,14 @@ public class ResumeService {
         User managedOwner = userRepository.findById(owner.getId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        resume.getOwner().setId(managedOwner.getId()); // owner 필드는 변경되지 않지만, 관계의 안전성 확보
+        // ⭐ 신규 필드 업데이트 로직 추가
         resume.setTitle(form.getTitle());
-        resume.setContent(form.getContent());
+        resume.setPersonalContact(form.getPersonalContact());
+        resume.setEducationHistory(form.getEducationHistory());
+        resume.setExperienceHistory(form.getExperienceHistory());
+        resume.setCertificationsAndSkills(form.getCertificationsAndSkills());
+        resume.setSelfIntroduction(form.getSelfIntroduction());
+
         return resume;
     }
 
