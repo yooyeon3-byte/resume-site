@@ -4,14 +4,12 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title layout:title-default="Resume Site">Resume Site</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title layout:title-default="Yuyeon Site">Yuyeon Site</title> <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 <header class="navbar">
     <div class="logo">
-        <a th:href="@{/}">Resume<span>Site</span></a>
-    </div>
+        <a th:href="@{/}">Yuyeon<span>Site</span></a> </div>
     <div class="nav-right">
         <th:block sec:authorize="isAuthenticated()">
             <span class="nav-link" th:text="${#authentication.name} + '님'">사용자명님</span>
@@ -33,7 +31,6 @@
 </main>
 
 <footer class="footer">
-    © 2025 ResumeHub. All rights reserved.
-</footer>
+    © 2025 YuyeonSite. All rights reserved. </footer>
 </body>
 </html>

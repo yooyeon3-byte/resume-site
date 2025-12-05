@@ -24,12 +24,18 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 서로 다릅니다.");
         }
 
+        // ⭐ 수정된 부분: 첫 번째 가입자인지 확인
+        boolean isFirstUser = userRepository.count() == 0;
+
+        // ⭐ 첫 사용자이거나 admin 플래그가 true인 경우 ADMIN 권한 부여
+        User.Role role = (isFirstUser || admin) ? User.Role.ADMIN : User.Role.USER;
+
         User user = User.builder()
                 .username(dto.getUsername())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
                 .email(dto.getEmail())
-                .role(admin ? User.Role.ADMIN : User.Role.USER)
+                .role(role) // ⭐ 수정된 role 사용
                 .build();
 
         return userRepository.save(user);
