@@ -13,19 +13,19 @@
         <form th:action="@{/signup}" method="post" th:object="${userSignupDto}">
             <label>아이디
                 <input type="text" th:field="*{username}">
-            </label>
+                <p th:errors="*{username}" class="field-error"></p> </label>
             <label>이름
                 <input type="text" th:field="*{name}">
-            </label>
+                <p th:errors="*{name}" class="field-error"></p> </label>
             <label>이메일
                 <input type="email" th:field="*{email}">
-            </label>
+                <p th:errors="*{email}" class="field-error"></p> </label>
             <label>비밀번호
                 <input type="password" th:field="*{password}">
-            </label>
+                <p th:errors="*{password}" class="field-error"></p> </label>
             <label>비밀번호 확인
                 <input type="password" th:field="*{confirmPassword}">
-            </label>
+                <p th:errors="*{confirmPassword}" class="field-error"></p> </label>
 
             <button class="btn-primary full" type="submit">가입하기</button>
         </form>

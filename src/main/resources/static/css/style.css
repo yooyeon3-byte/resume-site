@@ -247,3 +247,13 @@ textarea {
     text-align: center;
     color: #777;
 }
+
+/* src/main/resources/static/css/style.css 에 추가 */
+
+/* 필드별 유효성 검사 오류 메시지 스타일 */
+.field-error {
+    color: #b91c1c; /* 진한 빨강색 */
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 0;
+}
