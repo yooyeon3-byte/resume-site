@@ -1,44 +1,58 @@
-<div class="card">
-    <h2 th:text="${#fields.hasErrors('resumeForm') ? '입력을 다시 확인해주세요' : '입사 지원서 작성'}"></h2>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<body>
+<th:block layout:fragment="content">
 
-    <form th:action="${resumeForm.id == null ? '/resumes' : '/resumes/' + resumeForm.id}"
-          method="post" th:object="${resumeForm}">
+    <div class="page-header">
+        <h2 th:text="${#fields.hasErrors('resumeForm') ? '입력을 다시 확인해주세요' : '입사 지원서 작성'}"></h2>
+        <a th:href="@{/resumes}" class="btn-outline">목록으로</a>
+    </div>
 
-        <label>제목 (지원 분야 / 이력서 이름)
-            <input type="text" th:field="*{title}">
-            <p th:errors="*{title}" class="field-error"></p>
-        </label>
+    <div class="card">
 
-        <label>인적 사항 및 연락처 (입사 지원서 양식 참고)
-            <textarea th:field="*{personalContact}" rows="4"
-                      placeholder="이름/연락처/주소/이메일, 병역, 현주소 등 필수 정보를 작성하세요."></textarea>
-            <p th:errors="*{personalContact}" class="field-error"></p>
-        </label>
+        <form th:action="${resumeForm.id == null ? '/resumes' : '/resumes/' + resumeForm.id}"
+              method="post" th:object="${resumeForm}">
 
-        <label>학력 사항 (입학/졸업, 학교, 전공, 소재지)
-            <textarea th:field="*{educationHistory}" rows="6"
-                      placeholder="고등학교, 대학교, 대학원 등의 학력 정보를 기간 및 소재지와 함께 구조화하여 작성하세요."></textarea>
-            <p th:errors="*{educationHistory}" class="field-error"></p>
-        </label>
+            <label>제목 (지원 분야 / 이력서 이름)
+                <input type="text" th:field="*{title}">
+                <p th:errors="*{title}" class="field-error"></p>
+            </label>
 
-        <label>경력 사항 (근무처, 근무 기간, 직위, 담당 업무)
-            <textarea th:field="*{experienceHistory}" rows="8"
-                      placeholder="주요 프로젝트, 근무 기간, 회사명, 직위 및 담당 업무 등을 상세하게 작성하세요."></textarea>
-            <p th:errors="*{experienceHistory}" class="field-error"></p>
-        </label>
+            <label>인적 사항 및 연락처 (입사 지원서 양식 참고)
+                <textarea th:field="*{personalContact}" rows="4"
+                          placeholder="이름/연락처/주소/이메일, 병역, 현주소 등 필수 정보를 작성하세요."></textarea>
+                <p th:errors="*{personalContact}" class="field-error"></p>
+            </label>
 
-        <label>자격 및 기술 사항
-            <textarea th:field="*{certificationsAndSkills}" rows="6"
-                      placeholder="취득일, 자격증 종류, 발행처 및 주요 기술 스택과 숙련도를 작성하세요."></textarea>
-            <p th:errors="*{certificationsAndSkills}" class="field-error"></p>
-        </label>
+            <label>학력 사항 (입학/졸업, 학교, 전공, 소재지)
+                <textarea th:field="*{educationHistory}" rows="6"
+                          placeholder="고등학교, 대학교, 대학원 등의 학력 정보를 기간 및 소재지와 함께 구조화하여 작성하세요."></textarea>
+                <p th:errors="*{educationHistory}" class="field-error"></p>
+            </label>
 
-        <label>자기소개서 (지원 동기, 직무 역량, 포부)
-            <textarea th:field="*{selfIntroduction}" rows="12"
-                      placeholder="지원 동기, 직무에 대한 강점, 입사 후 포부 등을 자유롭게 작성하세요."></textarea>
-            <p th:errors="*{selfIntroduction}" class="field-error"></p>
-        </label>
+            <label>경력 사항 (근무처, 근무 기간, 직위, 담당 업무)
+                <textarea th:field="*{experienceHistory}" rows="8"
+                          placeholder="주요 프로젝트, 근무 기간, 회사명, 직위 및 담당 업무 등을 상세하게 작성하세요."></textarea>
+                <p th:errors="*{experienceHistory}" class="field-error"></p>
+            </label>
 
-        <button class="btn-primary full" type="submit">저장하기</button>
-    </form>
-</div>
+            <label>자격 및 기술 사항
+                <textarea th:field="*{certificationsAndSkills}" rows="6"
+                          placeholder="취득일, 자격증 종류, 발행처 및 주요 기술 스택과 숙련도를 작성하세요."></textarea>
+                <p th:errors="*{certificationsAndSkills}" class="field-error"></p>
+            </label>
+
+            <label>자기소개서 (지원 동기, 직무 역량, 포부)
+                <textarea th:field="*{selfIntroduction}" rows="12"
+                          placeholder="지원 동기, 직무에 대한 강점, 입사 후 포부 등을 자유롭게 작성하세요."></textarea>
+                <p th:errors="*{selfIntroduction}" class="field-error"></p>
+            </label>
+
+            <button class="btn-primary full" type="submit">저장하기</button>
+        </form>
+    </div>
+</th:block>
+</body>
+</html>
