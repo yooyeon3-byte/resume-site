@@ -4,20 +4,43 @@
       layout:decorate="~{fragments/layout}">
 <body>
 <th:block layout:fragment="content">
-    <div class="card">
-        <h2 th:text="${resume.title}">제목</h2>
-        <p class="muted">
-            작성자: <span th:text="${resume.owner.name}"></span>
-            (<span th:text="${resume.owner.username}"></span>)
-        </p>
-        <p class="muted" th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></p>
-        <hr>
-        <pre class="resume-content" th:text="${resume.content}"></pre>
 
-        <div class="card-actions right">
-            <a th:href="@{/admin/resumes}" class="btn-outline">목록으로</a>
-        </div>
+    <div class="page-header">
+        <h2 th:text="${resume.title}">이력서 제목</h2>
+        <a th:href="@{/admin/resumes}" class="btn-outline small">목록으로</a>
     </div>
+
+    <p class="muted" style="margin-top: -20px; margin-bottom: 25px;">
+        작성자: <span th:text="${resume.owner.name}"></span>
+        (<span th:text="${resume.owner.username}"></span>) |
+        작성일: <span th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></span>
+    </p>
+
+    <div class="card detail-section">
+        <h3>1. 인적 사항 및 연락처</h3>
+        <pre class="content-text" th:text="${resume.personalContact}"></pre>
+    </div>
+
+    <div class="card detail-section">
+        <h3>2. 학력 사항</h3>
+        <pre class="content-text" th:text="${resume.educationHistory}"></pre>
+    </div>
+
+    <div class="card detail-section">
+        <h3>3. 경력 사항</h3>
+        <pre class="content-text" th:text="${resume.experienceHistory}"></pre>
+    </div>
+
+    <div class="card detail-section">
+        <h3>4. 자격 및 기술 사항</h3>
+        <pre class="content-text" th:text="${resume.certificationsAndSkills}"></pre>
+    </div>
+
+    <div class="card detail-section">
+        <h3>5. 자기소개서</h3>
+        <pre class="content-text" th:text="${resume.selfIntroduction}"></pre>
+    </div>
+
 </th:block>
 </body>
 </html>
