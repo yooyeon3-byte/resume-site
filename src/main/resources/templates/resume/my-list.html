@@ -14,15 +14,13 @@
             <h3 th:text="${resume.title}">제목</h3>
             <p class="muted" th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></p>
             <p class="resume-preview"
-               th:text="${#strings.abbreviate(resume.content, 120)}"></p>
-
-            <div class="card-actions">
-                <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline">수정</a>
-                <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
-                      onsubmit="return confirm('삭제할까요?');">
-                    <button class="btn-danger" type="submit">삭제</button>
-                </form>
-            </div>
+               th:text="${#strings.abbreviate(resume.selfIntroduction, 120)}"></p> <div class="card-actions">
+            <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline">수정</a>
+            <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
+                  onsubmit="return confirm('삭제할까요?');">
+                <button class="btn-danger" type="submit">삭제</button>
+            </form>
+        </div>
         </div>
     </div>
 

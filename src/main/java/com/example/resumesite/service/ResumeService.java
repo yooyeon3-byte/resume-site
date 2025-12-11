@@ -4,7 +4,7 @@ import com.example.resumesite.domain.Resume;
 import com.example.resumesite.domain.User;
 import com.example.resumesite.dto.ResumeForm;
 import com.example.resumesite.repository.ResumeRepository;
-import com.example.resumesite.repository.UserRepository; // ⭐ UserRepository 임포트 확인
+import com.example.resumesite.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,19 +17,18 @@ import java.util.List;
 public class ResumeService {
 
     private final ResumeRepository resumeRepository;
-    private final UserRepository userRepository; // ⭐ 이 필드가 반드시 final 이어야 합니다.
+    private final UserRepository userRepository;
 
-    // ⭐ create 메소드 로직 (Managed User Entity 사용)
+    // ⭐ create 메소드 로직 (500 Error 해결 핵심: Managed User Entity 사용)
     public Resume create(User owner, ResumeForm form) {
 
-        // 1. Managed User 객체를 조회합니다. (500 에러 해결 핵심)
+        // 1. Detached User 객체의 ID를 사용하여 Managed User 객체를 조회합니다.
         User managedOwner = userRepository.findById(owner.getId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자 ID를 찾을 수 없습니다."));
 
-        // 2. Managed User 객체를 사용하여 Resume 엔티티를 빌드합니다.
+        // 2. Managed User 객체를 사용하여 Resume 엔티티를 빌드 및 저장합니다.
         Resume resume = Resume.builder()
                 .title(form.getTitle())
-                // 신규 필드 매핑
                 .personalContact(form.getPersonalContact())
                 .educationHistory(form.getEducationHistory())
                 .experienceHistory(form.getExperienceHistory())
@@ -39,8 +38,6 @@ public class ResumeService {
                 .build();
         return resumeRepository.save(resume);
     }
-
-    // ... (나머지 메소드 유지) ...
 
     public Resume update(User owner, ResumeForm form) {
         Resume resume = resumeRepository.findById(form.getId())
@@ -63,8 +60,6 @@ public class ResumeService {
 
         return resume;
     }
-
-
 
     public void delete(User owner, Long id) {
         Resume resume = resumeRepository.findById(id)

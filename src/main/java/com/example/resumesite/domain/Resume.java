@@ -18,7 +18,7 @@ public class Resume {
     @Column(nullable = false, length = 100)
     private String title;
 
-    // ⭐ 기존 content 필드를 대체하고 새로운 필드 추가
+    // ⭐ 새로 추가된 필드들 (DB에 반영되어야 함)
     @Lob @Column(nullable = false)
     private String personalContact; // 인적 사항 및 연락처
 
@@ -32,7 +32,7 @@ public class Resume {
     private String certificationsAndSkills; // 자격 및 기술
 
     @Lob @Column(nullable = false)
-    private String selfIntroduction; // 자기소개서 (기존 content 대체)
+    private String selfIntroduction; // 자기소개서
 
     private LocalDateTime createdAt;
 
