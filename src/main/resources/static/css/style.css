@@ -1,21 +1,22 @@
 /* ========================================================= */
-/* BASE & GLOBAL STYLES                    */
+/* BASE & GLOBAL STYLES (Final V4)         */
 /* ========================================================= */
 
 :root {
-    /* Professional Color Palette (Deep Blue/Indigo) */
-    --color-primary: #1e3a8a;       /* Deep Indigo (링크, 아웃라인 버튼) */
-    --color-primary-light: #3b82f6; /* Accent Blue (링크 호버) */
-    --color-cta-orange: #f97316;   /* ⭐ NEW: 액센트 오렌지 (CTA 버튼) */
+    /* Professional & Clean Palette (Deep Navy + Cyan Accent) */
+    --color-primary: #1e3a8a;       /* Deep Navy / Link & Outline Color */
+    --color-primary-light: #3b82f6; /* Soft Accent Blue / Link Hover */
+    --color-cta-green: #10b981;     /* ⭐ NEW: Vibrant Green for main buttons (촌스러움 방지) */
     --color-background: #ffffff;
-    --color-page-bg: #f8fafc;       /* Light Gray Background */
+    --color-page-bg: #f5f8fc;       /* Very Light Sky Background */
     --color-text: #1f2937;
     --color-text-subtle: #6b7280;
     --color-border: #e5e7eb;
     --color-danger: #dc2626;
 
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    /* Shadow adjustments for a lighter, floating effect */
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 8px 16px -4px rgba(30, 58, 138, 0.15);
 }
 
 * {
@@ -32,11 +33,11 @@ body {
 
 a {
     text-decoration: none;
-    color: var(--color-primary);
+    color: var(--color-primary-light);
     transition: color 0.2s;
 }
 a:hover {
-    color: var(--color-primary-light);
+    color: var(--color-primary);
 }
 
 /* ========================================================= */
@@ -49,7 +50,7 @@ a:hover {
     align-items: center;
     padding: 16px 40px;
     background: var(--color-background);
-    box-shadow: var(--shadow-sm); /* Subtle Shadow */
+    box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -59,32 +60,31 @@ a:hover {
 .logo {
     font-weight: 800;
     font-size: 24px;
+    color: var(--color-primary);
 }
 .logo span {
-    color: var(--color-primary-light); /* Accent color */
+    color: var(--color-primary-light);
 }
 
 .nav-right {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
 }
 
 .nav-link {
     font-size: 14px;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: 6px;
     color: var(--color-text);
     transition: background 0.2s, color 0.2s;
 }
-
 .nav-link:hover {
-    background: var(--color-border);
+    background: #e0e7ff;
     color: var(--color-text);
 }
-
 .nav-link.active-link {
-    color: var(--color-primary); /* 우측 상단 링크 색상 유지 */
+    color: var(--color-primary);
     font-weight: 600;
 }
 
@@ -106,7 +106,7 @@ a:hover {
 
 .page-header h2 {
     font-size: 26px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 /* HERO 섹션 */
@@ -116,24 +116,22 @@ a:hover {
 }
 
 .hero h1 {
-    font-size: 36px;
-    font-weight: 700;
-    margin-bottom: 25px;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 20px;
 }
 
 .hero p {
     font-size: 18px;
     color: var(--color-text-subtle);
     margin-bottom: 50px;
-    white-space: normal;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .hero-actions {
     display: flex;
     justify-content: center;
-    gap: 14px;
-    margin-top: 0;
+    gap: 20px;
 }
 
 
@@ -142,56 +140,49 @@ a:hover {
 /* ========================================================= */
 
 .btn {
-    border-radius: 6px;
-    padding: 10px 20px;
+    border-radius: 8px;
+    padding: 14px 28px;
     font-size: 15px;
     font-weight: 600;
     border: none;
     cursor: pointer;
     display: inline-block;
-    text-align: center;
     transition: all 0.2s ease-in-out;
     box-shadow: var(--shadow-sm);
 }
 
 .btn-primary {
-    /* ⭐ 수정: 민트색 -> 오렌지색으로 변경 */
-    background-color: var(--color-cta-orange);
+    /* ⭐ 수정: 색상을 Vibrant Green으로 변경 */
+    background-color: var(--color-cta-green);
     color: white;
 }
 .btn-primary:hover {
-    background-color: #ea580c; /* Darker orange on hover */
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4); /* 오렌지색 그림자 */
+    background-color: #059669; /* Darker green on hover */
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
     transform: translateY(-1px);
 }
 
 .btn-outline {
+    /* ⭐ 수정: 테두리를 메인 색상으로 강조하고, 텍스트 색상을 짙게 설정 */
     border: 1px solid var(--color-primary);
-    color: var(--color-primary);
-    background: var(--color-background);
+    color: var(--color-primary); /* 텍스트를 Deep Navy로 변경 */
+    background: var(--color-background); /* 배경은 흰색 유지 */
 }
 .btn-outline:hover {
-    background: var(--color-primary);
-    color: white;
-    box-shadow: var(--shadow-md);
-}
-
-.btn-danger {
-    background: var(--color-danger);
-    color: white;
-}
-.btn-danger:hover {
-    background: #b91c1c;
+    background: var(--color-primary-light); /* 호버 시 밝은 블루로 배경 변경 */
+    color: white; /* 텍스트를 흰색으로 변경 */
+    box-shadow: var(--shadow-sm);
 }
 
 .small {
-    padding: 7px 14px;
-    font-size: 13px;
+    padding: 10px 20px; /* small 버튼의 높이를 충분히 확보 */
+    font-size: 14px;
+    box-shadow: none;
 }
 
 .large {
-    padding: 14px 28px;
-    font-size: 16px;
+    padding: 16px 32px;
+    font-size: 18px;
 }
 
 .full {
@@ -203,7 +194,7 @@ label {
     display: block;
     font-size: 14px;
     font-weight: 500;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 
 input[type="text"],
@@ -211,19 +202,19 @@ input[type="password"],
 input[type="email"],
 textarea {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 8px;
     border: 1px solid var(--color-border);
     margin-top: 6px;
     font-size: 15px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background-color: white;
+    background-color: var(--color-page-bg);
 }
 
 input:focus, textarea:focus {
     border-color: var(--color-primary-light);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
     outline: none;
+    background-color: white;
 }
 
 textarea {
@@ -242,22 +233,82 @@ textarea {
     margin-bottom: 30px;
 }
 
-/* ... (나머지 스타일 유지) */
+.auth-card {
+    max-width: 450px;
+    margin: 50px auto 0;
+    padding: 40px 30px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--color-primary);
+}
 
 .muted {
-    font-size: 14px; /* Fix: 12px -> 14px로 증가 */
+    font-size: 14px;
     color: var(--color-text-subtle);
     margin-top: 15px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.resume-preview {
+    font-size: 14px;
+    color: var(--color-text-subtle);
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-top: 10px;
+}
+
+/* Error Styles */
+.error {
+    background: #fee2e2;
+    color: var(--color-danger);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+.field-error {
+    color: var(--color-danger);
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.table th, .table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    white-space: nowrap; /* 텍스트 겹침 방지 */
+}
+.table th {
+    /* 테이블 헤더의 폰트 색상을 어둡게 하여 가독성 강화 */
+    color: var(--color-text);
+    font-weight: 700;
 }
 
 /* 이력서 목록 페이지 '아직 등록된 이력서가 없습니다.' 텍스트 대비 개선 */
 .empty {
     text-align: center;
-    color: var(--color-text); /* 텍스트를 어둡게 변경 */
+    color: var(--color-text);
     font-weight: 500;
 }
 .empty a {
-    color: var(--color-primary-light); /* 링크 색상을 밝은 Accent Blue로 변경 */
+    color: var(--color-primary-light);
     font-weight: 600;
 }
 
