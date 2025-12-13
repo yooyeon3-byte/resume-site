@@ -30,6 +30,52 @@
             </th:block>
         </div>
     </div>
+
+    <div class="card comment-section" id="comments-section">
+        <h3 class="resume-section-title" style="margin-bottom: 15px; border-bottom: none;">
+            댓글 <span th:text="${#lists.size(post.comments)}">0</span>개
+        </h3>
+
+        <div sec:authorize="isAuthenticated()">
+            <form th:action="@{'/board/' + ${post.id} + '/comments'}" method="post" th:object="${commentForm}">
+                <input type="hidden" th:field="*{boardId}" th:value="${post.id}">
+
+                <div class="comment-form-group">
+                    <textarea th:field="*{content}"
+                              placeholder="댓글을 작성해 주세요. (로그인 사용자만 가능)"
+                              required></textarea>
+                    <button class="btn-primary" type="submit">등록</button>
+                </div>
+                <p th:errors="*{content}" class="field-error"></p>
+                <div class="error" th:if="${commentError}" th:text="${commentError}"></div>
+            </form>
+        </div>
+
+        <div class="comment-list">
+            <div th:each="comment : ${post.comments}" class="comment-item">
+                <div class="comment-meta">
+                    <span class="comment-author" th:text="${comment.author.name}">작성자</span>
+                    <span>
+                        <span th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}">2025.01.01 10:00</span>
+                    </span>
+                </div>
+                <div class="comment-content" th:text="${comment.content}">댓글 내용입니다.</div>
+
+                <div class="comment-actions" sec:authorize="isAuthenticated()">
+                    <th:block th:if="${#authentication.principal.user.id == comment.author.id}">
+                        <form th:action="@{'/board/' + ${post.id} + '/comments/' + ${comment.id} + '/delete'}" method="post"
+                              onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                            <button type="submit" class="btn-danger small">삭제</button>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(post.comments)}" class="muted" style="text-align: center; padding: 20px;">
+                첫 댓글을 남겨보세요.
+            </div>
+        </div>
+    </div>
 </th:block>
 </body>
 </html>

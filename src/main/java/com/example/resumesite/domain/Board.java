@@ -3,6 +3,7 @@ package com.example.resumesite.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +31,11 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
+
+    // ⭐ 추가: 댓글 리스트
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt asc") // 댓글은 작성 순서대로 정렬
+    private List<Comment> comments;
 
     @PrePersist
     public void onCreate() {
