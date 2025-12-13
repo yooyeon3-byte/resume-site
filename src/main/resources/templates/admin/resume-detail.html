@@ -7,7 +7,7 @@
 
     <div class="page-header">
         <h2 th:text="${resume.title}">이력서 제목</h2>
-        <a th:href="@{/admin/resumes}" class="btn-outline small">목록으로</a>
+        <a th:href="@{/company/resumes}" class="btn-outline small">목록으로</a>
     </div>
 
     <p class="muted" style="margin-top: -20px; margin-bottom: 25px;">
@@ -17,30 +17,145 @@
     </p>
 
     <div class="card detail-section">
-        <h3>1. 인적 사항 및 연락처</h3>
-        <pre class="content-text" th:text="${resume.personalContact}"></pre>
+        <h3>■ 인적 사항 및 지원 정보</h3>
+        <div style="display: flex; gap: 40px;">
+            <div style="flex-shrink: 0;">
+                <img th:if="${resume.photoPath}"
+                     th:src="@{${resume.photoPath}}"
+                     style="width: 120px; height: 160px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;"
+                     alt="증명사진">
+                <div th:unless="${resume.photoPath}" style="width: 120px; height: 160px; border: 1px dashed #ccc; text-align: center; line-height: 160px; font-size: 14px; color: #888;">
+                    사진 없음
+                </div>
+            </div>
+
+            <table class="table" style="width: 100%; max-width: 400px; margin-top: 0;">
+                <tr><th style="width: 30%; background-color: #f7f7f7;">지원 분야</th><td th:text="${resume.title}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">성명</th><td th:text="${resume.name}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">생년월일</th><td th:text="${resume.birthDate}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">주소</th><td th:text="${resume.address}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">전화</th><td th:text="${resume.phone}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">이메일</th><td th:text="${resume.email}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">긴급 연락처</th><td th:text="${resume.personalContact}"></td></tr>
+            </table>
+        </div>
     </div>
 
     <div class="card detail-section">
-        <h3>2. 학력 사항</h3>
-        <pre class="content-text" th:text="${resume.educationHistory}"></pre>
+        <h3>■ 병역 사항</h3>
+        <table class="table" style="width: 100%; max-width: 600px; margin-top: 0;">
+            <tr><th style="width: 25%;">병역구분</th><td th:text="${resume.militaryStatus}"></td></tr>
+            <tr><th>군별/계급/병과</th><td th:text="${resume.militaryBranch + ' / ' + resume.militaryRank + ' / ' + resume.militarySpecialty}"></td></tr>
+            <tr><th>복무기간</th><td th:text="${resume.militaryPeriod}"></td></tr>
+            <tr><th>보훈대상</th><td th:text="${resume.veteranBenefit ? '대상' : '비대상'}"></td></tr>
+        </table>
     </div>
 
     <div class="card detail-section">
-        <h3>3. 경력 사항</h3>
-        <pre class="content-text" th:text="${resume.experienceHistory}"></pre>
+        <h3>■ 학력 사항</h3>
+        <div id="educationTableContainer" class="json-table-container"></div>
     </div>
 
     <div class="card detail-section">
-        <h3>4. 자격 및 기술 사항</h3>
-        <pre class="content-text" th:text="${resume.certificationsAndSkills}"></pre>
+        <h3>■ 경력 사항</h3>
+        <div id="experienceTableContainer" class="json-table-container"></div>
     </div>
 
     <div class="card detail-section">
-        <h3>5. 자기소개서</h3>
+        <h3>■ 자격증/면허증</h3>
+        <div id="certificateTableContainer" class="json-table-container"></div>
+    </div>
+
+    <div class="card detail-section">
+        <h3>■ 대외활동 경험</h3>
+        <div id="activityTableContainer" class="json-table-container"></div>
+    </div>
+
+    <div class="card detail-section">
+        <h3>■ 자기소개서</h3>
         <pre class="content-text" th:text="${resume.selfIntroduction}"></pre>
     </div>
 
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thymeleaf에서 JSON 문자열을 JavaScript 변수로 가져옵니다.
+            // (Thymeleaf는 JSON 문자열을 HTML 주석 처리 없이 그대로 출력하므로, JS에서 JSON.parse를 사용하기 위함)
+            const educationJson = [[${resume.educationHistory}]];
+            const experienceJson = [[${resume.experienceHistory}]];
+            const certificateJson = [[${resume.certificationsAndSkills}]];
+            const activityJson = [[${resume.extracurricularActivities}]];
+
+            // 헬퍼 함수: JSON 키를 한글 헤더로 변환
+            const headerMap = {
+                // 학력
+                schoolName: '학교명', period: '기간', major: '전공', notes: '비고',
+                // 경력
+                companyName: '회사명/직위', period: '기간', responsibility: '담당 업무',
+                // 자격증
+                certificateName: '자격증명', acquisitionDate: '취득일', publisher: '발행처',
+                // 대외활동
+                activityName: '활동명', period: '기간', organization: '기관명/주최', details: '내용/비고'
+            };
+
+            /**
+             * JSON 문자열을 HTML 테이블로 렌더링하는 함수
+             */
+            function renderJsonTable(jsonString, containerId) {
+                const container = document.getElementById(containerId);
+                let data;
+
+                // JSON.parse를 시도하기 전에 문자열이 유효한지 확인
+                if (!jsonString || jsonString.trim() === '[]') {
+                    container.innerHTML = `<p class="muted" style="margin: 0; padding: 10px;">작성된 항목이 없습니다.</p>`;
+                    return;
+                }
+
+                try {
+                    data = JSON.parse(jsonString);
+                } catch (e) {
+                    console.error("JSON 파싱 오류:", e, jsonString);
+                    container.innerHTML = `<p style="color: var(--color-danger);">데이터 로드 오류: 유효하지 않은 형식입니다.</p><pre>${jsonString}</pre>`;
+                    return;
+                }
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    container.innerHTML = `<p class="muted" style="margin: 0; padding: 10px;">작성된 항목이 없습니다.</p>`;
+                    return;
+                }
+
+                // 1. 헤더 생성 (첫 번째 객체의 키를 사용)
+                // 키 순서를 고정하기 위해 필터링된 배열 사용
+                const allKeys = Object.keys(headerMap);
+                const keys = Object.keys(data[0]).filter(key => key !== 'id' && allKeys.includes(key));
+
+                let tableHtml = `<table class="table" style="table-layout: auto; margin-top: 0; width: 100%;"><thead><tr>`;
+                keys.forEach(key => {
+                    tableHtml += `<th style="width: ${key === 'period' ? '20%' : 'auto'};">${headerMap[key] || key}</th>`;
+                });
+                tableHtml += `</tr></thead><tbody>`;
+
+                // 2. 본문 행 생성
+                data.forEach(item => {
+                    tableHtml += `<tr>`;
+                    keys.forEach(key => {
+                        const content = item[key] ? item[key].toString() : '';
+                        // pre-wrap을 사용하여 긴 내용도 잘 표시되도록 합니다.
+                        tableHtml += `<td style="white-space: pre-wrap; font-size: 14px;">${content}</td>`;
+                    });
+                    tableHtml += `</tr>`;
+                });
+
+                tableHtml += `</tbody></table>`;
+                container.innerHTML = tableHtml;
+            }
+
+            // 렌더링 실행
+            renderJsonTable(educationJson, 'educationTableContainer');
+            renderJsonTable(experienceJson, 'experienceTableContainer');
+            renderJsonTable(certificateJson, 'certificateTableContainer');
+            renderJsonTable(activityJson, 'activityTableContainer');
+        });
+    </script>
 </th:block>
 </body>
 </html>
