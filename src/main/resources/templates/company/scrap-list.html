@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<body>
+<th:block layout:fragment="content">
+    <div class="page-header">
+        <h2>⭐ 스크랩한 이력서 목록</h2>
+        <a th:href="@{/company/resumes}" class="btn-outline small">전체 이력서 목록</a>
+    </div>
+
+    <table class="table" th:unless="${#lists.isEmpty(scraps)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>작성자 이름</th>
+            <th>작성일</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="scrap : ${scraps}">
+            <td th:text="${scrap.resume.id}"></td>
+            <td th:text="${scrap.resume.title}"></td>
+            <td th:text="${scrap.resume.owner.name}"></td>
+            <td th:text="${#temporals.format(scrap.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+            <td>
+                <a th:href="@{'/company/resumes/' + ${scrap.resume.id}}" class="btn-outline small">이력서 보기</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(scraps)}" class="empty">
+        스크랩한 이력서가 없습니다.
+    </div>
+</th:block>
+</body>
+</html>

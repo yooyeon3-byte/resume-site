@@ -6,6 +6,9 @@ import com.example.resumesite.dto.BoardForm;
 import com.example.resumesite.repository.BoardRepository;
 import com.example.resumesite.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +23,39 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
+    // ⭐ 수정: 페이징, 검색, 분류를 통합 처리하는 메서드
     @Transactional(readOnly = true)
-    public List<Board> findAll() {
-        // 최신 글이 위에 오도록 id를 내림차순 정렬
-        return boardRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    public Page<Board> findBoardList(int page, String category, String keyword) {
+        // 페이지 번호는 0부터 시작, 한 페이지에 10개, id를 내림차순 정렬
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "id"));
+
+        boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
+        boolean hasCategory = category != null && !category.equals("all");
+
+        if (hasKeyword) {
+            String searchKeyword = "%" + keyword + "%";
+
+            if (hasCategory) {
+                // 분류 + 검색어 (제목 또는 내용)
+                return boardRepository.findByCategoryAndTitleContainingOrCategoryAndContentContaining(
+                        category, searchKeyword, category, searchKeyword, pageable
+                );
+            } else {
+                // 전체 분류 + 검색어 (제목 또는 내용)
+                return boardRepository.findAll((root, query, criteriaBuilder) ->
+                                criteriaBuilder.or(
+                                        criteriaBuilder.like(root.get("title"), searchKeyword),
+                                        criteriaBuilder.like(root.get("content"), searchKeyword)
+                                )
+                        , pageable);
+            }
+        } else if (hasCategory) {
+            // 분류만 선택된 경우
+            return boardRepository.findByCategory(category, pageable);
+        }
+
+        // 키워드 없고, 분류도 전체인 경우 (전체 페이징)
+        return boardRepository.findAll(pageable);
     }
 
     @Transactional(readOnly = true)
@@ -39,6 +71,7 @@ public class BoardService {
         Board board = Board.builder()
                 .title(form.getTitle())
                 .content(form.getContent())
+                .category(form.getCategory() != null ? form.getCategory() : "자유") // ⭐ 분류 추가
                 .author(managedAuthor)
                 .viewCount(0)
                 .build();
@@ -56,7 +89,7 @@ public class BoardService {
 
         board.setTitle(form.getTitle());
         board.setContent(form.getContent());
-
+        board.setCategory(form.getCategory()); // ⭐ 분류 업데이트
         return board; // @Transactional 덕분에 자동 저장
     }
 

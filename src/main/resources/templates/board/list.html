@@ -6,19 +6,33 @@
 <body>
 <th:block layout:fragment="content">
     <div class="page-header">
-        <h2>자유 게시판</h2>
+        <h2>💖 자유 게시판 ✍️</h2>
         <a th:href="@{/board/new}" class="btn-primary small" sec:authorize="isAuthenticated()">글 작성</a>
     </div>
 
-    <div th:if="${#lists.isEmpty(posts)}" class="empty">
-        현재 등록된 게시글이 없습니다. 첫 글을 작성해 보세요.
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <form th:action="@{/board}" method="get" style="display: flex; gap: 10px;">
+            <input type="hidden" name="page" th:value="0"> <select name="category" onchange="this.form.submit()" style="width: 120px; padding: 8px; border-radius: 6px;">
+            <option value="all" th:selected="${category == 'all'}">전체 분류</option>
+            <option value="자유" th:selected="${category == '자유'}">자유</option>
+            <option value="질문" th:selected="${category == '질문'}">질문</option>
+            <option value="정보공유" th:selected="${category == '정보공유'}">정보 공유</option>
+        </select>
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="제목 또는 내용을 검색하세요" style="width: 250px; padding: 8px; border-radius: 6px;">
+            <button type="submit" class="btn-primary small" style="padding: 8px 15px;">검색</button>
+        </form>
     </div>
 
-    <table class="table" th:unless="${#lists.isEmpty(posts)}">
+    <div th:if="${#lists.isEmpty(posts)}" class="empty">
+        현재 등록된 게시글이 없습니다. <a th:href="@{/board/new}">첫 글을 작성해 보세요.</a>
+    </div>
+
+    <table class="table board-list-table" th:unless="${#lists.isEmpty(posts)}">
         <thead>
         <tr>
-            <th style="width: 10%;">번호</th>
-            <th style="width: 50%;">제목</th>
+            <th style="width: 8%;">번호</th>
+            <th style="width: 10%;">분류</th>
+            <th style="width: 42%;">제목</th>
             <th style="width: 15%;">작성자</th>
             <th style="width: 10%;">조회수</th>
             <th style="width: 15%;">작성일</th>
@@ -26,9 +40,13 @@
         </thead>
         <tbody>
         <tr th:each="post : ${posts}">
-            <td th:text="${post.id}"></td>
+            <td th:text="${post.id}" style="text-align: center;"></td>
+            <td th:text="${post.category}" style="text-align: center; font-weight: 500;">분류</td>
             <td>
-                <a th:href="@{'/board/' + ${post.id}}" th:text="${post.title}">게시글 제목</a>
+                <a th:href="@{'/board/' + ${post.id}}" th:text="${post.title}" class="board-title-link">게시글 제목</a>
+                <span th:if="${#lists.size(post.comments) > 0}" class="comment-count">
+                    [<span th:text="${#lists.size(post.comments)}"></span>]
+                </span>
             </td>
             <td th:text="${post.author.name}">작성자 이름</td>
             <td th:text="${post.viewCount}">0</td>
@@ -36,6 +54,35 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:if="${!paging.isEmpty()}" style="display: flex; justify-content: center; margin-top: 30px;">
+        <nav aria-label="Page navigation">
+            <ul class="pagination" style="display: flex; list-style: none; padding: 0; gap: 5px; align-items: center;">
+
+                <li th:classappend="${paging.first} ? 'disabled'">
+                    <a th:if="${!paging.first}" th:href="@{/board(page=${paging.number-1}, category=${category}, keyword=${keyword})}"
+                       style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px;">&lt; 이전</a>
+                    <span th:if="${paging.first}" class="muted" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px;">&lt; 이전</span>
+                </li>
+
+                <li th:each="i : ${#numbers.sequence(0, paging.totalPages - 1)}"
+                    th:classappend="${i == paging.number} ? 'active'"
+                    style="font-weight: 600;">
+                    <a th:if="${i != paging.number}" th:href="@{/board(page=${i}, category=${category}, keyword=${keyword})}"
+                       th:text="${i + 1}"
+                       style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; color: var(--color-primary);"></a>
+                    <span th:if="${i == paging.number}" th:text="${i + 1}"
+                          style="padding: 8px 12px; border: 1px solid var(--color-primary-light); border-radius: 4px; background-color: var(--color-primary-light); color: white;"></span>
+                </li>
+
+                <li th:classappend="${paging.last} ? 'disabled'">
+                    <a th:if="${!paging.last}" th:href="@{/board(page=${paging.number+1}, category=${category}, keyword=${keyword})}"
+                       style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px;">다음 &gt;</a>
+                    <span th:if="${paging.last}" class="muted" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px;">다음 &gt;</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </th:block>
 </body>
 </html>

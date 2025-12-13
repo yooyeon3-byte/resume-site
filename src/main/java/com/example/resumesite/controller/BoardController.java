@@ -1,5 +1,6 @@
 package com.example.resumesite.controller;
 
+import com.example.resumesite.domain.Board;
 import com.example.resumesite.domain.User;
 import com.example.resumesite.dto.BoardForm;
 import com.example.resumesite.dto.CommentForm;
@@ -8,6 +9,7 @@ import com.example.resumesite.service.BoardService;
 import com.example.resumesite.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page; // ⭐ 추가
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +24,21 @@ public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
 
-    // 게시글 목록
+    // 게시글 목록 (⭐ 페이징, 검색, 분류 적용)
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("posts", boardService.findAll());
+    public String list(Model model,
+                       @RequestParam(value = "page", defaultValue = "0") int page,
+                       @RequestParam(value = "category", defaultValue = "all") String category,
+                       @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+
+        Page<Board> paging = boardService.findBoardList(page, category, keyword);
+
+        model.addAttribute("paging", paging);
+        model.addAttribute("posts", paging.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", paging.getTotalPages());
+        model.addAttribute("category", category);
+        model.addAttribute("keyword", keyword);
         return "board/list";
     }
 

@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class ResumeController {
     public String newForm(Model model) {
         // 동적 폼을 위해 최소 1개의 빈 리스트 요소를 미리 넣어줍니다.
         ResumeForm form = new ResumeForm();
-        // form.setEducationList(List.of(new ResumeForm.EducationDto())); // 초기 폼 구성에 따라 필요하면 추가
+        form.setIsPublic(false); // ⭐ 기본값 설정
         model.addAttribute("resumeForm", form);
         return "resume/form";
     }
@@ -124,6 +125,19 @@ public class ResumeController {
     public String delete(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @PathVariable Long id) {
         resumeService.delete(userDetails.getUser(), id);
+        return "redirect:/resumes";
+    }
+
+    // ⭐ 추가: 이력서 공개 여부 토글
+    @PostMapping("/{id}/toggle-public")
+    public String togglePublic(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        var resume = resumeService.findById(id);
+        if (!resume.getOwner().getId().equals(userDetails.getUser().getId())) {
+            return "redirect:/resumes?error=unauthorized";
+        }
+
+        // 이력서 엔티티 직접 수정
+        resume.setIsPublic(!resume.getIsPublic()); // 상태 반전
         return "redirect:/resumes";
     }
 }

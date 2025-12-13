@@ -40,6 +40,9 @@ public class Resume {
     @Column(length = 50) private String militaryEndDate; // ⭐ 추가: 복무 종료 기간 필드
     @Column(nullable = false) private Boolean veteranBenefit; // 보훈대상
 
+    // ⭐ 추가: 이력서 공개 여부 (기본값 false)
+    @Column(nullable = false) private Boolean isPublic = false;
+
     // ⭐ 구조화된 리스트 데이터 (JSON 문자열로 저장)
     @Lob @Column(nullable = false)
     private String educationHistory; // 학력 사항 리스트 (JSON)

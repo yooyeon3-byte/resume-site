@@ -24,6 +24,10 @@ public class Board {
 
     private int viewCount = 0; // 조회수
 
+    // ⭐ 추가: 게시글 분류 (자유, 질문, 정보공유)
+    @Column(length = 20)
+    private String category;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{fragments/layout}">
 <body>
 <th:block layout:fragment="content">
 
     <div class="page-header">
         <h2 th:text="${resume.title}">이력서 제목</h2>
-        <a th:href="@{/company/resumes}" class="btn-outline small">목록으로</a>
+        <a th:href="@{/company/resumes}" th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="btn-outline small">목록으로</a>
+        <a th:href="@{/admin/resumes}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="btn-outline small">목록으로</a>
+
+        <div sec:authorize="hasRole('COMPANY')">
+            <form th:action="@{'/company/resumes/' + ${resume.id} + '/toggle-scrap'}" method="post">
+                <button type="submit"
+                        th:classappend="${isScrapped} ? 'btn-danger small' : 'btn-outline small'"
+                        th:text="${isScrapped} ? '⭐ 스크랩 취소' : '⭐ 관심 이력서 등록'"></button>
+            </form>
+        </div>
     </div>
 
     <p class="muted" style="margin-top: -20px; margin-bottom: 25px;">
@@ -38,6 +48,11 @@
                 <tr><th style="width: 30%; background-color: #f7f7f7;">이메일</th><td th:text="${resume.email}"></td></tr>
                 <tr><th style="width: 30%; background-color: #f7f7f7;">성별</th><td th:text="${resume.gender}"></td></tr>
                 <tr><th style="width: 30%; background-color: #f7f7f7;">긴급 연락처</th><td th:text="${resume.personalContact}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">공개 여부</th>
+                    <td th:styleappend="${resume.isPublic} ? 'color: var(--color-cta-green); font-weight: 600;' : 'color: var(--color-danger); font-weight: 600;'"
+                        th:text="${resume.isPublic} ? '✅ 공개됨' : '🔒 비공개'">
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -146,10 +161,10 @@
                         }, []);
 
                     // 시작일과 종료일은 항상 제목 다음에 위치하도록 조정
-                    const dateIndex = keysToRender.findIndex(k => k.includes('Name') || k.includes('organization') || k.includes('major'));
-                    if (dateIndex !== -1) {
+                    const titleKeyIndex = keysToRender.findIndex(k => k.includes('Name') || k.includes('organization') || k.includes('major'));
+                    if (titleKeyIndex !== -1) {
                          // 이미 존재하는 제목/전공 필드 뒤에 삽입 (존재하지 않으면 그냥 끝에 추가됨)
-                        keysToRender.splice(dateIndex + 1, 0, 'startDate', 'endDate');
+                        keysToRender.splice(titleKeyIndex + 1, 0, 'startDate', 'endDate');
                         // 중복 제거
                         keysToRender = keysToRender.filter((key, index, self) => self.indexOf(key) === index);
                     } else {

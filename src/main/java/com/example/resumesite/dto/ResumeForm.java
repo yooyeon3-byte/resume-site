@@ -35,6 +35,9 @@ public class ResumeForm {
 
     private String gender; // ⭐ 추가: 성별 필드
 
+    // ⭐ 추가: 공개 여부
+    private Boolean isPublic = false;
+
     // -- 병역 사항 --
     private String militaryStatus;
     private String militaryBranch;
@@ -85,6 +88,7 @@ public class ResumeForm {
         form.setPersonalContact(resume.getPersonalContact());
 
         form.setGender(resume.getGender());
+        form.setIsPublic(resume.getIsPublic()); // ⭐ 추가: 공개 여부 매핑
 
         // 병역 사항 매핑
         form.setMilitaryStatus(resume.getMilitaryStatus());

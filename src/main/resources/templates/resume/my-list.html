@@ -14,13 +14,23 @@
             <h3 th:text="${resume.title}">제목</h3>
             <p class="muted" th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></p>
             <p class="resume-preview"
-               th:text="${#strings.abbreviate(resume.selfIntroduction, 120)}"></p> <div class="card-actions">
-            <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline">수정</a>
-            <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
-                  onsubmit="return confirm('삭제할까요?');">
-                <button class="btn-danger" type="submit">삭제</button>
-            </form>
-        </div>
+               th:text="${#strings.abbreviate(resume.selfIntroduction, 120)}"></p>
+            <div style="margin-top: 10px; font-size: 14px; font-weight: 600;"
+                 th:styleappend="${resume.isPublic} ? 'color: var(--color-cta-green);' : 'color: var(--color-danger);'">
+                <span th:text="${resume.isPublic} ? '✅ 공개 중' : '🔒 비공개'"></span>
+            </div>
+            <div class="card-actions">
+                <form th:action="@{'/resumes/' + ${resume.id} + '/toggle-public'}" method="post" style="margin-right: auto;">
+                    <button th:classappend="${resume.isPublic} ? 'btn-danger small' : 'btn-outline small'" type="submit"
+                            th:text="${resume.isPublic} ? '비공개 전환' : '공개 전환'"></button>
+                </form>
+
+                <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline small">수정</a>
+                <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
+                      onsubmit="return confirm('삭제할까요?');">
+                    <button class="btn-danger small" type="submit">삭제</button>
+                </form>
+            </div>
         </div>
     </div>
 
