@@ -2,7 +2,6 @@ package com.example.resumesite.controller;
 
 import com.example.resumesite.domain.User;
 import com.example.resumesite.security.CustomUserDetails;
-import com.example.resumesite.service.ResumeService;
 import com.example.resumesite.service.ScrapService; // ⭐ 추가
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal; // ⭐ 추가

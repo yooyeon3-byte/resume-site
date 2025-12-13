@@ -1,7 +1,6 @@
 package com.example.resumesite.controller;
 
 import com.example.resumesite.domain.User; // ⭐ User import 추가
-import com.example.resumesite.service.ResumeService;
 import com.example.resumesite.service.UserService; // ⭐ UserService import 추가
 import com.example.resumesite.repository.UserRepository; // ⭐ UserRepository import 추가
 import lombok.RequiredArgsConstructor;

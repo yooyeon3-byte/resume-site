@@ -3,7 +3,6 @@ package com.example.resumesite.controller;
 import com.example.resumesite.domain.User;
 import com.example.resumesite.dto.ResumeForm;
 import com.example.resumesite.security.CustomUserDetails;
-import com.example.resumesite.service.ResumeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
