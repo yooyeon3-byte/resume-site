@@ -29,6 +29,9 @@ public class Resume {
     @Column(length = 100) private String email; // 이메일
     @Column(length = 30) private String personalContact; // 긴급 연락처 (기존 필드 재활용)
 
+    // ⭐ 추가: 성별 필드
+    @Column(length = 10) private String gender;
+
     // ⭐ 병역 사항 (양식 반영)
     @Column(length = 20) private String militaryStatus; // 병역 구분
     @Column(length = 20) private String militaryBranch; // 군별

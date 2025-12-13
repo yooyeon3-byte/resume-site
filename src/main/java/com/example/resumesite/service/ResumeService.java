@@ -49,6 +49,8 @@ public class ResumeService {
                 .phone(form.getPhone())
                 .email(form.getEmail())
                 .personalContact(form.getPersonalContact())
+                // ⭐ 추가: 성별 매핑
+                .gender(form.getGender())
 
                 // 병역 사항
                 .militaryStatus(form.getMilitaryStatus())
@@ -92,6 +94,9 @@ public class ResumeService {
         resume.setPhone(form.getPhone());
         resume.setEmail(form.getEmail());
         resume.setPersonalContact(form.getPersonalContact());
+
+        // ⭐ 추가: 성별 매핑
+        resume.setGender(form.getGender());
 
         // 병역 사항
         resume.setMilitaryStatus(form.getMilitaryStatus());

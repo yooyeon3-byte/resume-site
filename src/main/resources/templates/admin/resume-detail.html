@@ -36,6 +36,7 @@
                 <tr><th style="width: 30%; background-color: #f7f7f7;">주소</th><td th:text="${resume.address}"></td></tr>
                 <tr><th style="width: 30%; background-color: #f7f7f7;">전화</th><td th:text="${resume.phone}"></td></tr>
                 <tr><th style="width: 30%; background-color: #f7f7f7;">이메일</th><td th:text="${resume.email}"></td></tr>
+                <tr><th style="width: 30%; background-color: #f7f7f7;">성별</th><td th:text="${resume.gender}"></td></tr>
                 <tr><th style="width: 30%; background-color: #f7f7f7;">긴급 연락처</th><td th:text="${resume.personalContact}"></td></tr>
             </table>
         </div>
@@ -78,12 +79,11 @@
 
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            // Thymeleaf에서 JSON 문자열을 JavaScript 변수로 가져옵니다.
-            // (Thymeleaf는 JSON 문자열을 HTML 주석 처리 없이 그대로 출력하므로, JS에서 JSON.parse를 사용하기 위함)
-            const educationJson = [[${resume.educationHistory}]];
-            const experienceJson = [[${resume.experienceHistory}]];
-            const certificateJson = [[${resume.certificationsAndSkills}]];
-            const activityJson = [[${resume.extracurricularActivities}]];
+            // Thymeleaf에서 JSON 문자열을 JavaScript String 리터럴로 안전하게 가져옵니다.
+            const educationJson = /*[[${resume.educationHistory}]]*/ '[]';
+            const experienceJson = /*[[${resume.experienceHistory}]]*/ '[]';
+            const certificateJson = /*[[${resume.certificationsAndSkills}]]*/ '[]';
+            const activityJson = /*[[${resume.extracurricularActivities}]]*/ '[]';
 
             // 헬퍼 함수: JSON 키를 한글 헤더로 변환
             const headerMap = {

@@ -205,6 +205,21 @@
                             <input type="email" th:field="*{email}" required>
                             <p th:errors="*{email}" class="field-error"></p>
                         </label>
+
+                        <div class="form-group">
+                            <label style="margin-bottom: 5px;">성별</label>
+                            <div style="display: flex; gap: 20px; align-items: center; padding-top: 10px;">
+                                <label style="display: flex; align-items: center; margin-bottom: 0; gap: 5px;">
+                                    <input type="radio" th:field="*{gender}" value="남성" style="width: auto;" required>
+                                    <span>남성</span>
+                                </label>
+                                <label style="display: flex; align-items: center; margin-bottom: 0; gap: 5px;">
+                                    <input type="radio" th:field="*{gender}" value="여성" style="width: auto;">
+                                    <span>여성</span>
+                                </label>
+                            </div>
+                            <p th:errors="*{gender}" class="field-error"></p>
+                        </div>
                     </div>
                 </div>
             </div>

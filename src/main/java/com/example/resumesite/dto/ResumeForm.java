@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import java.io.IOException;
 
 @Data
 public class ResumeForm {
@@ -29,6 +32,9 @@ public class ResumeForm {
     @NotBlank @Email private String email;
     @NotBlank private String personalContact; // 긴급 연락처
 
+    // ⭐ 추가: 성별 필드
+    private String gender;
+
     // -- 병역 사항 --
     private String militaryStatus;
     private String militaryBranch;
@@ -47,7 +53,22 @@ public class ResumeForm {
     private String selfIntroduction;
 
 
-    // from() 메소드 업데이트 (JSON 역직렬화 로직은 생략/가정)
+    // JSON 역직렬화를 위한 static 필드 및 유틸리티 함수
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static <T> List<T> deserializeJsonList(String json, TypeReference<List<T>> typeRef) {
+        if (json == null || json.trim().equals("[]") || json.trim().isEmpty()) {
+            return List.of();
+        }
+        try {
+            return objectMapper.readValue(json, typeRef);
+        } catch (IOException e) {
+            throw new RuntimeException("JSON 역직렬화 실패: " + e.getMessage(), e);
+        }
+    }
+
+
+    // from() 메소드 업데이트 (JSON 역직렬화 로직 포함)
     public static ResumeForm from(Resume resume) {
         ResumeForm form = new ResumeForm();
         form.setId(resume.getId());
@@ -62,6 +83,9 @@ public class ResumeForm {
         form.setEmail(resume.getEmail());
         form.setPersonalContact(resume.getPersonalContact());
 
+        // ⭐ 추가: 성별 매핑
+        form.setGender(resume.getGender());
+
         // 병역 사항 매핑
         form.setMilitaryStatus(resume.getMilitaryStatus());
         form.setMilitaryBranch(resume.getMilitaryBranch());
@@ -74,11 +98,15 @@ public class ResumeForm {
         form.setSelfIntroduction(resume.getSelfIntroduction());
 
 
-        // List 필드 역직렬화 및 매핑 (복잡하여 로직 생략)
-        // form.setEducationList(JsonConverter.deserialize(resume.getEducationHistory()));
-        // form.setExperienceList(JsonConverter.deserialize(resume.getExperienceHistory()));
-        // form.setCertificationList(JsonConverter.deserialize(resume.getCertificationsAndSkills()));
-        // form.setActivityList(JsonConverter.deserialize(resume.getExtracurricularActivities()));
+        // List 필드 역직렬화 및 매핑
+        form.setEducationList(deserializeJsonList(
+                resume.getEducationHistory(), new TypeReference<List<EducationDto>>() {}));
+        form.setExperienceList(deserializeJsonList(
+                resume.getExperienceHistory(), new TypeReference<List<ExperienceDto>>() {}));
+        form.setCertificationList(deserializeJsonList(
+                resume.getCertificationsAndSkills(), new TypeReference<List<CertificateDto>>() {}));
+        form.setActivityList(deserializeJsonList(
+                resume.getExtracurricularActivities(), new TypeReference<List<ActivityDto>>() {}));
 
         return form;
     }
