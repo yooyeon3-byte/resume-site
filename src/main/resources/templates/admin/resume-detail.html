@@ -47,7 +47,11 @@
         <table class="table" style="width: 100%; max-width: 600px; margin-top: 0;">
             <tr><th style="width: 25%;">병역구분</th><td th:text="${resume.militaryStatus}"></td></tr>
             <tr><th>군별/계급/병과</th><td th:text="${resume.militaryBranch + ' / ' + resume.militaryRank + ' / ' + resume.militarySpecialty}"></td></tr>
-            <tr><th>복무기간</th><td th:text="${resume.militaryPeriod}"></td></tr>
+            <tr>
+                <th>복무기간</th>
+                <td th:text="${(resume.militaryStartDate ?: '') + (resume.militaryStartDate != null or resume.militaryEndDate != null ? ' ~ ' : '') + (resume.militaryEndDate ?: '')}">
+                </td>
+            </tr>
             <tr><th>보훈대상</th><td th:text="${resume.veteranBenefit ? '대상' : '비대상'}"></td></tr>
         </table>
     </div>
@@ -85,16 +89,16 @@
             const certificateJson = /*[[${resume.certificationsAndSkills}]]*/ '[]';
             const activityJson = /*[[${resume.extracurricularActivities}]]*/ '[]';
 
-            // 헬퍼 함수: JSON 키를 한글 헤더로 변환
+            // 헬퍼 함수: JSON 키를 한글 헤더로 변환 (startDate/endDate 반영)
             const headerMap = {
                 // 학력
-                schoolName: '학교명', period: '기간', major: '전공', notes: '비고',
+                schoolName: '학교명', startDate: '시작일', endDate: '종료일', major: '전공', notes: '비고',
                 // 경력
-                companyName: '회사명/직위', period: '기간', responsibility: '담당 업무',
+                companyName: '회사명/직위', startDate: '시작일', endDate: '종료일', responsibility: '담당 업무',
                 // 자격증
                 certificateName: '자격증명', acquisitionDate: '취득일', publisher: '발행처',
                 // 대외활동
-                activityName: '활동명', period: '기간', organization: '기관명/주최', details: '내용/비고'
+                activityName: '활동명', startDate: '시작일', endDate: '종료일', organization: '기관명/주최', details: '내용/비고'
             };
 
             /**
@@ -124,20 +128,51 @@
                 }
 
                 // 1. 헤더 생성 (첫 번째 객체의 키를 사용)
-                // 키 순서를 고정하기 위해 필터링된 배열 사용
                 const allKeys = Object.keys(headerMap);
-                const keys = Object.keys(data[0]).filter(key => key !== 'id' && allKeys.includes(key));
+                const firstItemKeys = Object.keys(data[0]);
+
+                // ⭐ 수정: 렌더링할 키 순서 정의 (period 대신 startDate, endDate 포함)
+                let keysToRender;
+                if (containerId === 'educationTableContainer' || containerId === 'experienceTableContainer' || containerId === 'activityTableContainer') {
+                     // 기간을 시작일, 종료일로 분리
+
+                    // 학력/경력/대외활동은 순서를 조정합니다 (예: 학교명, 시작일, 종료일, 전공, 비고)
+                    keysToRender = ['schoolName', 'companyName', 'activityName', 'organization', 'major', 'notes', 'responsibility', 'details']
+                        .filter(k => firstItemKeys.includes(k)) // 존재하는 필터링
+                        .filter(k => k !== 'id')
+                        .reduce((acc, k) => {
+                            if (!acc.includes(k)) acc.push(k);
+                            return acc;
+                        }, []);
+
+                    // 시작일과 종료일은 항상 제목 다음에 위치하도록 조정
+                    const dateIndex = keysToRender.findIndex(k => k.includes('Name') || k.includes('organization') || k.includes('major'));
+                    if (dateIndex !== -1) {
+                         // 이미 존재하는 제목/전공 필드 뒤에 삽입 (존재하지 않으면 그냥 끝에 추가됨)
+                        keysToRender.splice(dateIndex + 1, 0, 'startDate', 'endDate');
+                        // 중복 제거
+                        keysToRender = keysToRender.filter((key, index, self) => self.indexOf(key) === index);
+                    } else {
+                         keysToRender = ['startDate', 'endDate'].concat(keysToRender);
+                         keysToRender = keysToRender.filter((key, index, self) => self.indexOf(key) === index);
+                    }
+
+                } else {
+                    // 자격증은 acquisitionDate 그대로
+                    keysToRender = firstItemKeys.filter(key => key !== 'id' && allKeys.includes(key));
+                }
 
                 let tableHtml = `<table class="table" style="table-layout: auto; margin-top: 0; width: 100%;"><thead><tr>`;
-                keys.forEach(key => {
-                    tableHtml += `<th style="width: ${key === 'period' ? '20%' : 'auto'};">${headerMap[key] || key}</th>`;
+                keysToRender.forEach(key => {
+                    // '기간' 필드가 분리되었으므로, 적절한 너비를 설정
+                    tableHtml += `<th style="width: ${key.includes('Date') || key.includes('period') ? '20%' : 'auto'};">${headerMap[key] || key}</th>`;
                 });
                 tableHtml += `</tr></thead><tbody>`;
 
                 // 2. 본문 행 생성
                 data.forEach(item => {
                     tableHtml += `<tr>`;
-                    keys.forEach(key => {
+                    keysToRender.forEach(key => {
                         const content = item[key] ? item[key].toString() : '';
                         // pre-wrap을 사용하여 긴 내용도 잘 표시되도록 합니다.
                         tableHtml += `<td style="white-space: pre-wrap; font-size: 14px;">${content}</td>`;

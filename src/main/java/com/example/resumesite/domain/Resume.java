@@ -29,7 +29,6 @@ public class Resume {
     @Column(length = 100) private String email; // 이메일
     @Column(length = 30) private String personalContact; // 긴급 연락처 (기존 필드 재활용)
 
-    // ⭐ 추가: 성별 필드
     @Column(length = 10) private String gender;
 
     // ⭐ 병역 사항 (양식 반영)
@@ -37,7 +36,8 @@ public class Resume {
     @Column(length = 20) private String militaryBranch; // 군별
     @Column(length = 20) private String militaryRank;   // 계급
     @Column(length = 20) private String militarySpecialty; // 병과
-    @Column(length = 50) private String militaryPeriod; // 복무 기간
+    @Column(length = 50) private String militaryStartDate; // ⭐ 수정: 복무 시작 기간 필드
+    @Column(length = 50) private String militaryEndDate; // ⭐ 추가: 복무 종료 기간 필드
     @Column(nullable = false) private Boolean veteranBenefit; // 보훈대상
 
     // ⭐ 구조화된 리스트 데이터 (JSON 문자열로 저장)

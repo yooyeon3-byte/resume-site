@@ -32,7 +32,6 @@ public class ResumeForm {
     @NotBlank @Email private String email;
     @NotBlank private String personalContact; // 긴급 연락처
 
-    // ⭐ 추가: 성별 필드
     private String gender;
 
     // -- 병역 사항 --
@@ -40,7 +39,8 @@ public class ResumeForm {
     private String militaryBranch;
     private String militaryRank;
     private String militarySpecialty;
-    private String militaryPeriod;
+    private String militaryStartDate; // ⭐ 수정: 시작일 필드
+    private String militaryEndDate;   // ⭐ 추가: 종료일 필드
     private Boolean veteranBenefit = false;
 
     // ⭐ 구조화된 반복 필드
@@ -83,7 +83,6 @@ public class ResumeForm {
         form.setEmail(resume.getEmail());
         form.setPersonalContact(resume.getPersonalContact());
 
-        // ⭐ 추가: 성별 매핑
         form.setGender(resume.getGender());
 
         // 병역 사항 매핑
@@ -91,7 +90,9 @@ public class ResumeForm {
         form.setMilitaryBranch(resume.getMilitaryBranch());
         form.setMilitaryRank(resume.getMilitaryRank());
         form.setMilitarySpecialty(resume.getMilitarySpecialty());
-        form.setMilitaryPeriod(resume.getMilitaryPeriod());
+        // ⭐ 수정: militaryPeriod 대신 Start/End Date 매핑
+        form.setMilitaryStartDate(resume.getMilitaryStartDate());
+        form.setMilitaryEndDate(resume.getMilitaryEndDate());
         form.setVeteranBenefit(resume.getVeteranBenefit());
 
         // 자기소개서 매핑 (단순 필드)
@@ -111,11 +112,12 @@ public class ResumeForm {
         return form;
     }
 
-    // Simplified Nested DTOs
+    // Simplified Nested DTOs - period 필드를 startDate/endDate로 분리
     @Data
     public static class EducationDto {
         private String schoolName;
-        private String period;
+        private String startDate; // ⭐ 변경
+        private String endDate;   // ⭐ 추가
         private String major;
         private String notes;
     }
@@ -123,21 +125,23 @@ public class ResumeForm {
     @Data
     public static class ExperienceDto {
         private String companyName;
-        private String period;
+        private String startDate; // ⭐ 변경
+        private String endDate;   // ⭐ 추가
         private String responsibility;
     }
 
     @Data
     public static class CertificateDto {
         private String certificateName;
-        private String acquisitionDate;
+        private String acquisitionDate; // HTML type="date" 사용
         private String publisher;
     }
 
     @Data
     public static class ActivityDto { // 대외활동 경험 DTO
         private String activityName;
-        private String period;
+        private String startDate; // ⭐ 변경
+        private String endDate;   // ⭐ 추가
         private String organization;
         private String details;
     }

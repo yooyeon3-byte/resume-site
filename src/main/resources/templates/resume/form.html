@@ -84,6 +84,21 @@
             margin-bottom: 0;
         }
 
+        /* ⭐ 추가: 기간 입력 그룹 스타일 */
+        .date-range-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .date-range-group input[type="date"] {
+            width: 50%;
+            padding: 8px;
+        }
+        .date-range-group span {
+            font-size: 14px;
+            color: var(--color-text-subtle);
+        }
+
         /* 동적 테이블 스타일 (깔끔하게 유지) */
         .resume-table {
             border-radius: 8px;
@@ -101,6 +116,10 @@
             padding: 8px;
             background-color: transparent;
         }
+        .resume-table input[type="date"] {
+            padding: 7px;
+        }
+
 
         /* 컨트롤 버튼 스타일 (작고 세련되게) */
         .control-btn {
@@ -190,8 +209,7 @@
                             <p th:errors="*{name}" class="field-error"></p>
                         </label>
                         <label>생년월일
-                            <input type="text" th:field="*{birthDate}" placeholder="YYYYMMDD" required>
-                            <p th:errors="*{birthDate}" class="field-error"></p>
+                            <input type="date" th:field="*{birthDate}" required> <p th:errors="*{birthDate}" class="field-error"></p>
                         </label>
                         <label class="personal-row">주 소
                             <input type="text" th:field="*{address}" required>
@@ -244,7 +262,11 @@
                         <input type="text" th:field="*{militarySpecialty}" placeholder="특기/보직">
                     </label>
                     <label>복무 기간
-                        <input type="text" th:field="*{militaryPeriod}" placeholder="YYYY.MM.DD ~ YYYY.MM.DD (XX개월)">
+                        <div class="date-range-group">
+                            <input type="date" th:field="*{militaryStartDate}"> <span>~</span>
+                            <input type="date" th:field="*{militaryEndDate}">   </div>
+                        <p th:errors="*{militaryStartDate}" class="field-error"></p>
+                        <p th:errors="*{militaryEndDate}" class="field-error"></p>
                     </label>
                     <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
                         <input type="checkbox" th:field="*{veteranBenefit}" style="width: auto;">
@@ -259,15 +281,19 @@
                     <thead>
                     <tr>
                         <th style="width: 30%;">학교명</th>
-                        <th style="width: 20%;">재학기간</th>
-                        <th style="width: 30%;">전공</th>
+                        <th style="width: 25%;">재학기간</th>
+                        <th style="width: 25%;">전공</th>
                         <th style="width: 20%;">비고/액션</th>
                     </tr>
                     </thead>
                     <tbody id="education-body">
                     <tr th:each="edu, stat : *{educationList}">
                         <td class="p-0"><input type="text" th:field="*{educationList[__${stat.index}__].schoolName}" required></td>
-                        <td class="p-0"><input type="text" th:field="*{educationList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
+                        <td class="p-0">
+                            <div class="date-range-group">
+                                <input type="date" th:field="*{educationList[__${stat.index}__].startDate}" required> <span>~</span>
+                                <input type="date" th:field="*{educationList[__${stat.index}__].endDate}"> </div>
+                        </td>
                         <td class="p-0"><input type="text" th:field="*{educationList[__${stat.index}__].major}" placeholder="전공"></td>
                         <td class="p-0">
                             <div class="input-group-row">
@@ -293,7 +319,11 @@
                     <tbody id="experience-body">
                     <tr th:each="exp, stat : *{experienceList}">
                         <td class="p-0"><input type="text" th:field="*{experienceList[__${stat.index}__].companyName}" required></td>
-                        <td class="p-0"><input type="text" th:field="*{experienceList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
+                        <td class="p-0">
+                            <div class="date-range-group">
+                                <input type="date" th:field="*{experienceList[__${stat.index}__].startDate}" required> <span>~</span>
+                                <input type="date" th:field="*{experienceList[__${stat.index}__].endDate}">   </div>
+                        </td>
                         <td class="p-0">
                             <div class="input-group-row">
                                 <input type="text" th:field="*{experienceList[__${stat.index}__].responsibility}" placeholder="담당 업무 및 주요 성과">
@@ -318,7 +348,8 @@
                     <tbody id="certificate-body">
                     <tr th:each="cert, stat : *{certificationList}">
                         <td class="p-0"><input type="text" th:field="*{certificationList[__${stat.index}__].certificateName}" required></td>
-                        <td class="p-0"><input type="text" th:field="*{certificationList[__${stat.index}__].acquisitionDate}" placeholder="YYYY.MM.DD"></td>
+                        <td class="p-0">
+                            <input type="date" th:field="*{certificationList[__${stat.index}__].acquisitionDate}" required> </td>
                         <td class="p-0">
                             <div class="input-group-row">
                                 <input type="text" th:field="*{certificationList[__${stat.index}__].publisher}" placeholder="발행처">
@@ -344,7 +375,11 @@
                     <tbody id="activity-body">
                     <tr th:each="activity, stat : *{activityList}">
                         <td class="p-0"><input type="text" th:field="*{activityList[__${stat.index}__].activityName}" required></td>
-                        <td class="p-0"><input type="text" th:field="*{activityList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
+                        <td class="p-0">
+                            <div class="date-range-group">
+                                <input type="date" th:field="*{activityList[__${stat.index}__].startDate}" required> <span>~</span>
+                                <input type="date" th:field="*{activityList[__${stat.index}__].endDate}"> </div>
+                        </td>
                         <td class="p-0"><input type="text" th:field="*{activityList[__${stat.index}__].organization}" placeholder="기관명/주최"></td>
                         <td class="p-0">
                             <div class="input-group-row">
@@ -382,7 +417,13 @@
             const educationRowTemplate = `
                 <tr data-index="INDEX_PLACEHOLDER">
                     <td class="p-0"><input type="text" class="form-control" name="educationList[INDEX_PLACEHOLDER].schoolName" placeholder="학교명" required></td>
-                    <td class="p-0"><input type="text" class="form-control" name="educationList[INDEX_PLACEHOLDER].period" placeholder="YYYY.MM~YYYY.MM"></td>
+                    <td class="p-0">
+                        <div class="date-range-group">
+                            <input type="date" class="form-control" name="educationList[INDEX_PLACEHOLDER].startDate" required>
+                            <span>~</span>
+                            <input type="date" class="form-control" name="educationList[INDEX_PLACEHOLDER].endDate">
+                        </div>
+                    </td>
                     <td class="p-0"><input type="text" class="form-control" name="educationList[INDEX_PLACEHOLDER].major" placeholder="전공"></td>
                     <td class="p-0">
                         <div class="input-group-row">
@@ -396,7 +437,13 @@
             const experienceRowTemplate = `
                 <tr data-index="INDEX_PLACEHOLDER">
                     <td class="p-0"><input type="text" class="form-control" name="experienceList[INDEX_PLACEHOLDER].companyName" placeholder="회사명/직위" required></td>
-                    <td class="p-0"><input type="text" class="form-control" name="experienceList[INDEX_PLACEHOLDER].period" placeholder="YYYY.MM~YYYY.MM"></td>
+                    <td class="p-0">
+                        <div class="date-range-group">
+                            <input type="date" class="form-control" name="experienceList[INDEX_PLACEHOLDER].startDate" required>
+                            <span>~</span>
+                            <input type="date" class="form-control" name="experienceList[INDEX_PLACEHOLDER].endDate">
+                        </div>
+                    </td>
                     <td class="p-0">
                         <div class="input-group-row">
                             <input type="text" class="form-control" name="experienceList[INDEX_PLACEHOLDER].responsibility" placeholder="담당 업무 및 주요 성과">
@@ -409,7 +456,9 @@
             const certificateRowTemplate = `
                 <tr data-index="INDEX_PLACEHOLDER">
                     <td class="p-0"><input type="text" class="form-control" name="certificationList[INDEX_PLACEHOLDER].certificateName" placeholder="자격증명" required></td>
-                    <td class="p-0"><input type="text" class="form-control" name="certificationList[INDEX_PLACEHOLDER].acquisitionDate" placeholder="YYYY.MM.DD"></td>
+                    <td class="p-0">
+                        <input type="date" class="form-control" name="certificationList[INDEX_PLACEHOLDER].acquisitionDate" required>
+                    </td>
                     <td class="p-0">
                         <div class="input-group-row">
                             <input type="text" class="form-control" name="certificationList[INDEX_PLACEHOLDER].publisher" placeholder="발행처">
@@ -423,7 +472,13 @@
             const activityRowTemplate = `
                 <tr data-index="INDEX_PLACEHOLDER">
                     <td class="p-0"><input type="text" class="form-control" name="activityList[INDEX_PLACEHOLDER].activityName" placeholder="활동명" required></td>
-                    <td class="p-0"><input type="text" class="form-control" name="activityList[INDEX_PLACEHOLDER].period" placeholder="YYYY.MM~YYYY.MM"></td>
+                    <td class="p-0">
+                        <div class="date-range-group">
+                            <input type="date" class="form-control" name="activityList[INDEX_PLACEHOLDER].startDate" required>
+                            <span>~</span>
+                            <input type="date" class="form-control" name="activityList[INDEX_PLACEHOLDER].endDate">
+                        </div>
+                    </td>
                     <td class="p-0"><input type="text" class="form-control" name="activityList[INDEX_PLACEHOLDER].organization" placeholder="기관명/주최"></td>
                     <td class="p-0">
                         <div class="input-group-row">

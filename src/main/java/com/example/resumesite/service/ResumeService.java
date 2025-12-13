@@ -49,7 +49,6 @@ public class ResumeService {
                 .phone(form.getPhone())
                 .email(form.getEmail())
                 .personalContact(form.getPersonalContact())
-                // ⭐ 추가: 성별 매핑
                 .gender(form.getGender())
 
                 // 병역 사항
@@ -57,7 +56,8 @@ public class ResumeService {
                 .militaryBranch(form.getMilitaryBranch())
                 .militaryRank(form.getMilitaryRank())
                 .militarySpecialty(form.getMilitarySpecialty())
-                .militaryPeriod(form.getMilitaryPeriod())
+                .militaryStartDate(form.getMilitaryStartDate()) // ⭐ 수정
+                .militaryEndDate(form.getMilitaryEndDate())     // ⭐ 추가
                 .veteranBenefit(form.getVeteranBenefit())
 
                 // 구조화된 리스트 (JSON 직렬화)
@@ -67,7 +67,7 @@ public class ResumeService {
                 .extracurricularActivities(toJson(form.getActivityList()))
 
                 // 자기소개서
-                .selfIntroduction(form.getSelfIntroduction()) // ⭐ 문제의 필드 포함 완료
+                .selfIntroduction(form.getSelfIntroduction())
 
                 .owner(managedOwner)
                 .build();
@@ -94,8 +94,6 @@ public class ResumeService {
         resume.setPhone(form.getPhone());
         resume.setEmail(form.getEmail());
         resume.setPersonalContact(form.getPersonalContact());
-
-        // ⭐ 추가: 성별 매핑
         resume.setGender(form.getGender());
 
         // 병역 사항
@@ -103,7 +101,8 @@ public class ResumeService {
         resume.setMilitaryBranch(form.getMilitaryBranch());
         resume.setMilitaryRank(form.getMilitaryRank());
         resume.setMilitarySpecialty(form.getMilitarySpecialty());
-        resume.setMilitaryPeriod(form.getMilitaryPeriod());
+        resume.setMilitaryStartDate(form.getMilitaryStartDate()); // ⭐ 수정
+        resume.setMilitaryEndDate(form.getMilitaryEndDate());     // ⭐ 추가
         resume.setVeteranBenefit(form.getVeteranBenefit());
 
         // 구조화된 리스트 (JSON 직렬화)
@@ -113,7 +112,7 @@ public class ResumeService {
         resume.setExtracurricularActivities(toJson(form.getActivityList()));
 
         // 자기소개서
-        resume.setSelfIntroduction(form.getSelfIntroduction()); // ⭐ 문제의 필드 포함 완료
+        resume.setSelfIntroduction(form.getSelfIntroduction());
 
         return resume;
     }
