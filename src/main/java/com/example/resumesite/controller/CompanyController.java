@@ -2,14 +2,15 @@ package com.example.resumesite.controller;
 
 import com.example.resumesite.domain.User;
 import com.example.resumesite.security.CustomUserDetails;
-import com.example.resumesite.service.ScrapService; // ⭐ 추가
+import com.example.resumesite.service.ResumeService; // ⭐ 누락된 ResumeService import 추가
+import com.example.resumesite.service.ScrapService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal; // ⭐ 추가
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping; // ⭐ 추가
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CompanyController {
 
     private final ResumeService resumeService;
-    private final ScrapService scrapService; // ⭐ 추가
+    private final ScrapService scrapService;
 
     // 전체 이력서 목록 조회 (기업 열람용)
     @GetMapping("/resumes")
@@ -38,7 +39,7 @@ public class CompanyController {
     // 특정 이력서 상세 조회 (스크랩 여부 확인)
     @GetMapping("/resumes/{id}")
     public String resumeDetail(@PathVariable Long id,
-                               @AuthenticationPrincipal CustomUserDetails userDetails, // ⭐ 추가
+                               @AuthenticationPrincipal CustomUserDetails userDetails,
                                Model model) {
         var resume = resumeService.findById(id);
         model.addAttribute("resume", resume);
