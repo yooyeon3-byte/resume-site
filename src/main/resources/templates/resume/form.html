@@ -4,61 +4,60 @@
       layout:decorate="~{fragments/layout}">
 <head>
     <style>
-        /* 이력서 폼 전용 스타일 추가 및 개선 */
+        /* ========================================================= */
+        /* 폼 디자인 오버라이드 및 세련된 스타일 (Final) */
+        /* ========================================================= */
         .resume-container {
             max-width: 900px;
             margin: 0 auto;
-            /* 기존 두꺼운 테두리 제거 및 그림자 유지 */
-            border: 1px solid var(--color-border);
-            padding: 20px;
-            background-color: white;
+            background-color: var(--color-background);
+            border-radius: 12px;
+            padding: 30px;
             box-shadow: var(--shadow-md);
         }
-        .resume-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            margin-bottom: 20px;
+        .form-section-card {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
         }
-        .resume-table th, .resume-table td {
-            border: 1px solid #e0e0e0; /* 연한 경계선 */
-            padding: 5px;
-            font-size: 14px;
-            height: 40px;
-        }
-        .resume-table th {
-            background-color: #f7f7f7; /* 배경색 연하게 변경 */
-            text-align: center;
-            font-weight: 600;
-            color: var(--color-text);
-        }
-        .resume-table input[type="text"], .resume-table input[type="email"], .resume-table select {
-            width: 100%;
-            border: none;
-            padding: 5px;
-            box-sizing: border-box;
-            background-color: transparent;
-        }
-        .p-0 { padding: 0 !important; }
         .resume-section-title {
-            font-size: 18px; /* 제목 크기 약간 키움 */
+            font-size: 20px;
             font-weight: 700;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--color-primary); /* 구분선 색상 강조 */
-            padding-bottom: 5px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-primary-light);
+            padding-bottom: 8px;
             display: flex;
             align-items: center;
-            color: var(--color-primary); /* 제목 색상 변경 */
         }
+
+        /* 인적 사항 그리드 레이아웃 */
+        .personal-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 20px;
+        }
+        .personal-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .personal-row {
+             grid-column: span 2;
+        }
+
+        /* 사진 박스 스타일 */
         .photo-box {
-            width: 120px;
-            height: 160px;
-            border: 1px dashed var(--color-border); /* 점선 테두리 */
+            width: 100%;
+            height: 180px;
+            border: 2px dashed var(--color-border);
+            border-radius: 8px;
             text-align: center;
-            line-height: 160px;
+            line-height: 180px;
             overflow: hidden;
-            display: inline-block;
+            display: block;
             cursor: pointer;
             background-color: #fafafa;
         }
@@ -67,42 +66,79 @@
             height: 100%;
             object-fit: cover;
         }
-
-        /* ⭐ 기능 버튼 디자인 개선 및 크기 조정 */
-        .control-btn {
-            padding: 3px 8px; /* 패딩을 줄여 버튼을 작게 만듦 */
-            font-size: 16px;
-            line-height: 1; /* 높이를 글자 크기에 맞춤 */
-            border-radius: 4px;
-            box-shadow: none;
-            transition: all 0.2s;
+        .photo-box .photo-placeholder {
+            font-size: 14px;
+            color: var(--color-text-subtle);
+            line-height: normal;
+            padding-top: 75px;
+            display: block;
         }
-        .add-row-btn {
+
+        /* 병역 사항 (2단 레이아웃) */
+        .military-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .military-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        /* 동적 테이블 스타일 (깔끔하게 유지) */
+        .resume-table {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            width: 100%; /* 테이블 너비 명시 */
+            border-collapse: collapse;
+        }
+        .resume-table th, .resume-table td {
+            border: 1px solid var(--color-border);
+            padding: 8px 10px;
+            height: 40px; /* 높이 고정 */
+        }
+        .resume-table input, .resume-table select {
+            padding: 8px;
+            background-color: transparent;
+        }
+
+        /* 컨트롤 버튼 스타일 (작고 세련되게) */
+        .control-btn {
             background-color: var(--color-cta-green);
             color: white;
-            padding: 3px 8px;
-            margin-left: 10px !important;
+            padding: 5px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            box-shadow: none;
+            transition: background 0.2s;
+        }
+        .add-row-btn {
+            margin-left: 10px;
         }
         .remove-row-btn {
             background-color: var(--color-danger);
-            color: white;
-            width: 30px; /* 고정 너비 */
-            height: 30px; /* 고정 높이 */
+            width: 30px;
+            height: 30px;
             padding: 0;
             line-height: 30px;
             font-size: 20px;
+            border-radius: 6px;
+        }
+        .input-group-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-        }
-        /* 테이블 내부 입력 필드와 버튼 간격 조정 */
-        .input-group-row {
-             display: flex;
-             align-items: center;
+            height: 100%;
         }
         .input-group-row input {
             flex-grow: 1;
             border-right: none !important;
+            padding: 5px;
+        }
+
+        /* ⭐ 추가: 리스트가 비어 있을 때 테이블 전체를 숨김 */
+        .hidden-table {
+            display: none !important;
+            border: none !important;
         }
     </style>
 </head>
@@ -115,195 +151,209 @@
         <a th:href="@{/resumes}" class="btn-outline">목록으로</a>
     </div>
 
-    <div class="card resume-container">
+    <div class="resume-container">
 
         <form th:action="${resumeForm.id == null ? '/resumes' : '/resumes/' + resumeForm.id}"
-              method="post" th:object="${resumeForm}" enctype="multipart/form-data"> <h1 style="text-align: center; margin-bottom: 20px;">이 력 서</h1>
+              method="post" th:object="${resumeForm}" enctype="multipart/form-data">
+            <h1 style="text-align: center; color: var(--color-primary); margin-bottom: 30px;">입 사 지 원 서</h1>
 
-            <table class="resume-table" style="margin-bottom: 5px;">
-                <tr>
-                    <th style="width: 20%; padding: 0 10px;">지원분야</th>
-                    <td style="width: 40%;" class="p-0">
-                        <input type="text" th:field="*{title}" placeholder="제목 또는 지원 분야 (필수)" required>
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 지원 정보</h3>
+                <div class="personal-inputs">
+                    <label>지원 분야 / 제목
+                        <input type="text" th:field="*{title}" placeholder="지원 분야 또는 이력서 제목 (필수)" required>
                         <p th:errors="*{title}" class="field-error"></p>
-                    </td>
-                    <th style="width: 20%; padding: 0 10px;">긴급 연락처</th>
-                    <td style="width: 20%;" class="p-0">
+                    </label>
+                    <label>긴급 연락처
                         <input type="text" th:field="*{personalContact}" placeholder="긴급 연락처 (필수)" required>
                         <p th:errors="*{personalContact}" class="field-error"></p>
-                    </td>
-                </tr>
-            </table>
-
-            <h3 class="resume-section-title">■ 인적 사항</h3>
-            <table class="resume-table">
-                <tr>
-                    <td rowspan="5" style="width: 120px; text-align: center; padding: 0;">
-                        <label for="photoFile" class="photo-box">
-                            <img id="photoPreview"
-                                 th:src="${resumeForm.existingPhotoPath != null} ? @{${resumeForm.existingPhotoPath}} : ''"
-                                 th:alt="${resumeForm.existingPhotoPath != null} ? '첨부된 사진' : '사진 첨부'"
-                                 th:style="${resumeForm.existingPhotoPath != null} ? 'display: block;' : 'display: none;'">
-                            <span th:if="${resumeForm.existingPhotoPath == null}" id="photoPlaceholder" style="font-size: 14px; color: #888;">사진 첨부</span>
-                            <input type="file" id="photoFile" name="photoFile" accept="image/*" onchange="previewImage(event)" style="display: none;">
-                            <input type="hidden" th:field="*{existingPhotoPath}">
-                        </label>
-                    </td>
-                    <th style="width: 15%;">성 명</th>
-                    <td style="width: 25%;" class="p-0"><input type="text" th:field="*{name}" placeholder="이름 (필수)" required></td>
-                    <th style="width: 15%;">생년월일</th>
-                    <td style="width: 33%;" class="p-0"><input type="text" th:field="*{birthDate}" placeholder="YYYYMMDD (필수)" required></td>
-                </tr>
-                <tr>
-                    <th>주 소</th>
-                    <td colspan="3" class="p-0"><input type="text" th:field="*{address}" placeholder="현재 거주 주소 (필수)" required></td>
-                </tr>
-                <tr>
-                    <th>전 화</th>
-                    <td class="p-0"><input type="text" th:field="*{phone}" placeholder="휴대폰 번호 (필수)" required></td>
-                    <th>이메일</th>
-                    <td class="p-0"><input type="email" th:field="*{email}" placeholder="이메일 주소 (필수)" required></td>
-                </tr>
-            </table>
-            <div class="field-error" th:if="${#fields.hasErrors('name') or #fields.hasErrors('birthDate') or #fields.hasErrors('address') or #fields.hasErrors('phone') or #fields.hasErrors('email')}" style="margin-top: -15px; margin-bottom: 10px;">
-                인적 사항 정보를 다시 확인해주세요.
+                    </label>
+                </div>
             </div>
 
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 인적 사항</h3>
+                <div class="personal-grid">
+                    <label for="photoFile" class="photo-box">
+                        <img id="photoPreview"
+                             th:src="${resumeForm.existingPhotoPath != null} ? @{${resumeForm.existingPhotoPath}} : ''"
+                             th:alt="${resumeForm.existingPhotoPath != null} ? '첨부된 사진' : '사진 첨부'"
+                             th:style="${resumeForm.existingPhotoPath != null} ? 'display: block;' : 'display: none;'">
+                        <span th:if="${resumeForm.existingPhotoPath == null}" id="photoPlaceholder" class="photo-placeholder">증명사진 첨부 (클릭)</span>
+                        <input type="file" id="photoFile" name="photoFile" accept="image/*" onchange="previewImage(event)" style="display: none;">
+                        <input type="hidden" th:field="*{existingPhotoPath}">
+                    </label>
 
-            <h3 class="resume-section-title">■ 학력 사항<button type="button" class="btn control-btn add-row-btn" data-target="education-body">+</button></h3>
-            <table class="resume-table mb-4">
-                <thead>
-                <tr>
-                    <th style="width: 30%;">학교명</th>
-                    <th style="width: 20%;">재학기간</th>
-                    <th style="width: 30%;">전공</th>
-                    <th style="width: 20%;">비고</th>
-                </tr>
-                </thead>
-                <tbody id="education-body">
-                <tr th:each="edu, stat : *{educationList}">
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{educationList[__${stat.index}__].schoolName}" placeholder="학교명" required></td>
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{educationList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{educationList[__${stat.index}__].major}" placeholder="전공"></td>
-                    <td class="p-0">
-                        <div class="input-group-row">
-                            <input type="text" class="form-control" th:field="*{educationList[__${stat.index}__].notes}" placeholder="졸업/재학/휴학">
-                            <button type="button" class="btn control-btn remove-row-btn" data-target="education-body" data-index="__${stat.index}__">-</button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    <div class="personal-inputs">
+                        <label>성 명
+                            <input type="text" th:field="*{name}" required>
+                            <p th:errors="*{name}" class="field-error"></p>
+                        </label>
+                        <label>생년월일
+                            <input type="text" th:field="*{birthDate}" placeholder="YYYYMMDD" required>
+                            <p th:errors="*{birthDate}" class="field-error"></p>
+                        </label>
+                        <label class="personal-row">주 소
+                            <input type="text" th:field="*{address}" required>
+                            <p th:errors="*{address}" class="field-error"></p>
+                        </label>
+                        <label>전 화
+                            <input type="text" th:field="*{phone}" required>
+                            <p th:errors="*{phone}" class="field-error"></p>
+                        </label>
+                        <label>이메일
+                            <input type="email" th:field="*{email}" required>
+                            <p th:errors="*{email}" class="field-error"></p>
+                        </label>
+                    </div>
+                </div>
+            </div>
 
-            <h3 class="resume-section-title">■ 병역 사항</h3>
-            <table class="resume-table">
-                <tr>
-                    <th rowspan="2" style="width: 10%;">병역</th>
-                    <td style="width: 20%;" class="p-0">
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 병역 사항</h3>
+                <div class="military-grid">
+                    <label>병역 구분
                         <select th:field="*{militaryStatus}">
                             <option value="미필">미필</option>
                             <option value="군필">군필</option>
                             <option value="면제">면제</option>
                         </select>
-                    </td>
-                    <th style="width: 10%;">군별</th>
-                    <td style="width: 20%;" class="p-0"><input type="text" th:field="*{militaryBranch}" placeholder="육군, 해병대 등"></td>
-                    <th style="width: 10%;">계급</th>
-                    <td style="width: 30%;" class="p-0"><input type="text" th:field="*{militaryRank}" placeholder="병장, 대위 등"></td>
-                </tr>
-                <tr>
-                    <th>병과</th>
-                    <td class="p-0"><input type="text" th:field="*{militarySpecialty}" placeholder="특기/보직"></td>
-                    <th>복무기간</th>
-                    <td colspan="3" class="p-0">
-                        <div class="d-flex align-items-center">
-                            <input type="text" th:field="*{militaryPeriod}" placeholder="YYYY.MM.DD ~ YYYY.MM.DD (XX개월)">
-                            <span style="white-space: nowrap; margin-left: 10px; margin-right: 5px;">보훈대상:</span>
-                            <input type="checkbox" th:field="*{veteranBenefit}" style="width: auto;">
-                        </div>
-                    </td>
-                </tr>
-            </table>
+                    </label>
+                    <label>군별
+                        <input type="text" th:field="*{militaryBranch}" placeholder="육군, 해병대 등">
+                    </label>
+                    <label>계급
+                        <input type="text" th:field="*{militaryRank}" placeholder="병장, 대위 등">
+                    </label>
+                    <label>병과 (특기)
+                        <input type="text" th:field="*{militarySpecialty}" placeholder="특기/보직">
+                    </label>
+                    <label>복무 기간
+                        <input type="text" th:field="*{militaryPeriod}" placeholder="YYYY.MM.DD ~ YYYY.MM.DD (XX개월)">
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                        <input type="checkbox" th:field="*{veteranBenefit}" style="width: auto;">
+                        <span>보훈 대상</span>
+                    </label>
+                </div>
+            </div>
 
-            <h3 class="resume-section-title">■ 경력 사항<button type="button" class="btn control-btn add-row-btn" data-target="experience-body">+</button></h3>
-            <table class="resume-table mb-4">
-                <thead>
-                <tr>
-                    <th style="width: 25%;">근무기간명 (회사명/직위)</th>
-                    <th style="width: 20%;">근무기간</th>
-                    <th style="width: 55%;">담당업무</th>
-                </tr>
-                </thead>
-                <tbody id="experience-body">
-                <tr th:each="exp, stat : *{experienceList}">
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{experienceList[__${stat.index}__].companyName}" placeholder="회사명/직위" required></td>
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{experienceList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
-                    <td class="p-0">
-                        <div class="input-group-row">
-                            <input type="text" class="form-control" th:field="*{experienceList[__${stat.index}__].responsibility}" placeholder="담당 업무 및 주요 성과">
-                            <button type="button" class="btn control-btn remove-row-btn" data-target="experience-body" data-index="__${stat.index}__">-</button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 학력 사항<button type="button" class="btn control-btn add-row-btn" data-target="education-body">+</button></h3>
+                <table class="resume-table" th:classappend="${#lists.isEmpty(resumeForm.educationList)} ? 'hidden-table' : ''">
+                    <thead>
+                    <tr>
+                        <th style="width: 30%;">학교명</th>
+                        <th style="width: 20%;">재학기간</th>
+                        <th style="width: 30%;">전공</th>
+                        <th style="width: 20%;">비고/액션</th>
+                    </tr>
+                    </thead>
+                    <tbody id="education-body">
+                    <tr th:each="edu, stat : *{educationList}">
+                        <td class="p-0"><input type="text" th:field="*{educationList[__${stat.index}__].schoolName}" required></td>
+                        <td class="p-0"><input type="text" th:field="*{educationList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
+                        <td class="p-0"><input type="text" th:field="*{educationList[__${stat.index}__].major}" placeholder="전공"></td>
+                        <td class="p-0">
+                            <div class="input-group-row">
+                                <input type="text" th:field="*{educationList[__${stat.index}__].notes}" placeholder="졸업/재학">
+                                <button type="button" class="btn control-btn remove-row-btn" data-target="education-body" data-index="__${stat.index}__">-</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <h3 class="resume-section-title">■ 자격증/면허증<button type="button" class="btn control-btn add-row-btn" data-target="certificate-body">+</button></h3>
-            <table class="resume-table mb-4">
-                <thead>
-                <tr>
-                    <th style="width: 40%;">자격증명</th>
-                    <th style="width: 30%;">취득일</th>
-                    <th style="width: 30%;">발행처</th>
-                </tr>
-                </thead>
-                <tbody id="certificate-body">
-                <tr th:each="cert, stat : *{certificationList}">
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{certificationList[__${stat.index}__].certificateName}" placeholder="자격증명" required></td>
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{certificationList[__${stat.index}__].acquisitionDate}" placeholder="YYYY.MM.DD"></td>
-                    <td class="p-0">
-                        <div class="input-group-row">
-                            <input type="text" class="form-control" th:field="*{certificationList[__${stat.index}__].publisher}" placeholder="발행처">
-                            <button type="button" class="btn control-btn remove-row-btn" data-target="certificate-body" data-index="__${stat.index}__">-</button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 경력 사항<button type="button" class="btn control-btn add-row-btn" data-target="experience-body">+</button></h3>
+                <table class="resume-table" th:classappend="${#lists.isEmpty(resumeForm.experienceList)} ? 'hidden-table' : ''">
+                    <thead>
+                    <tr>
+                        <th style="width: 25%;">회사명/직위</th>
+                        <th style="width: 20%;">근무기간</th>
+                        <th style="width: 55%;">담당업무</th>
+                    </tr>
+                    </thead>
+                    <tbody id="experience-body">
+                    <tr th:each="exp, stat : *{experienceList}">
+                        <td class="p-0"><input type="text" th:field="*{experienceList[__${stat.index}__].companyName}" required></td>
+                        <td class="p-0"><input type="text" th:field="*{experienceList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
+                        <td class="p-0">
+                            <div class="input-group-row">
+                                <input type="text" th:field="*{experienceList[__${stat.index}__].responsibility}" placeholder="담당 업무 및 주요 성과">
+                                <button type="button" class="btn control-btn remove-row-btn" data-target="experience-body" data-index="__${stat.index}__">-</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <h3 class="resume-section-title">■ 대외활동 경험<button type="button" class="btn control-btn add-row-btn" data-target="activity-body">+</button></h3>
-            <table class="resume-table mb-4">
-                <thead>
-                <tr>
-                    <th style="width: 25%;">활동명</th>
-                    <th style="width: 20%;">기간</th>
-                    <th style="width: 30%;">기관명/주최</th>
-                    <th style="width: 25%;">내용/비고</th>
-                </tr>
-                </thead>
-                <tbody id="activity-body">
-                <tr th:each="activity, stat : *{activityList}">
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{activityList[__${stat.index}__].activityName}" placeholder="활동명" required></td>
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{activityList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
-                    <td class="p-0"><input type="text" class="form-control" th:field="*{activityList[__${stat.index}__].organization}" placeholder="기관명/주최"></td>
-                    <td class="p-0">
-                        <div class="input-group-row">
-                            <input type="text" class="form-control" th:field="*{activityList[__${stat.index}__].details}" placeholder="내용/비고">
-                            <button type="button" class="btn control-btn remove-row-btn" data-target="activity-body" data-index="__${stat.index}__">-</button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 자격증/면허증<button type="button" class="btn control-btn add-row-btn" data-target="certificate-body">+</button></h3>
+                <table class="resume-table" th:classappend="${#lists.isEmpty(resumeForm.certificationList)} ? 'hidden-table' : ''">
+                    <thead>
+                    <tr>
+                        <th style="width: 40%;">자격증명</th>
+                        <th style="width: 30%;">취득일</th>
+                        <th style="width: 30%;">발행처</th>
+                    </tr>
+                    </thead>
+                    <tbody id="certificate-body">
+                    <tr th:each="cert, stat : *{certificationList}">
+                        <td class="p-0"><input type="text" th:field="*{certificationList[__${stat.index}__].certificateName}" required></td>
+                        <td class="p-0"><input type="text" th:field="*{certificationList[__${stat.index}__].acquisitionDate}" placeholder="YYYY.MM.DD"></td>
+                        <td class="p-0">
+                            <div class="input-group-row">
+                                <input type="text" th:field="*{certificationList[__${stat.index}__].publisher}" placeholder="발행처">
+                                <button type="button" class="btn control-btn remove-row-btn" data-target="certificate-body" data-index="__${stat.index}__">-</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <h3 class="resume-section-title">■ 자기소개서</h3>
-            <label style="margin-top: 10px;">
-                <textarea th:field="*{selfIntroduction}" rows="12" class="form-control"
-                          placeholder="지원 동기, 직무에 대한 강점, 입사 후 포부 등을 자유롭게 작성하세요." style="border: 1px solid var(--color-border);" required></textarea>
-                <p th:errors="*{selfIntroduction}" class="field-error"></p>
-            </label>
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 대외활동 경험<button type="button" class="btn control-btn add-row-btn" data-target="activity-body">+</button></h3>
+                <table class="resume-table" th:classappend="${#lists.isEmpty(resumeForm.activityList)} ? 'hidden-table' : ''">
+                    <thead>
+                    <tr>
+                        <th style="width: 25%;">활동명</th>
+                        <th style="width: 20%;">기간</th>
+                        <th style="width: 30%;">기관명/주최</th>
+                        <th style="width: 25%;">내용/비고</th>
+                    </tr>
+                    </thead>
+                    <tbody id="activity-body">
+                    <tr th:each="activity, stat : *{activityList}">
+                        <td class="p-0"><input type="text" th:field="*{activityList[__${stat.index}__].activityName}" required></td>
+                        <td class="p-0"><input type="text" th:field="*{activityList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
+                        <td class="p-0"><input type="text" th:field="*{activityList[__${stat.index}__].organization}" placeholder="기관명/주최"></td>
+                        <td class="p-0">
+                            <div class="input-group-row">
+                                <input type="text" th:field="*{activityList[__${stat.index}__].details}" placeholder="내용/비고">
+                                <button type="button" class="btn control-btn remove-row-btn" data-target="activity-body" data-index="__${stat.index}__">-</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <button class="btn-primary full large" type="submit" style="margin-top: 30px;">저장하기</button>
+
+            <div class="form-section-card">
+                <h3 class="resume-section-title">■ 자기소개서</h3>
+                <label style="margin-top: 10px;">
+                    <textarea th:field="*{selfIntroduction}" rows="12" class="form-control"
+                              placeholder="지원 동기, 직무에 대한 강점, 입사 후 포부 등을 자유롭게 작성하세요." style="border: 1px solid var(--color-border);" required></textarea>
+                    <p th:errors="*{selfIntroduction}" class="field-error"></p>
+                </label>
+            </div>
+
+
+            <button class="btn-primary full large" type="submit" style="margin-top: 10px;">저장하기</button>
         </form>
     </div>
 
@@ -390,38 +440,38 @@
                 // INDEX_PLACEHOLDER를 현재 인덱스로 치환
                 const newRowHtml = template.replace(/INDEX_PLACEHOLDER/g, currentIndex);
                 targetBody.insertAdjacentHTML('beforeend', newRowHtml);
+
+                // ⭐ 추가: 행 추가 시 테이블 표시 (hidden-table 클래스 제거)
+                const table = targetBody.closest('table');
+                if (table.classList.contains('hidden-table')) {
+                     table.classList.remove('hidden-table');
+                }
             }
 
             function removeRow(row) {
                 const targetBody = row.closest('tbody');
-                const rowCount = targetBody.children.length;
-
-                if (rowCount === 0) return;
-
-                // 행 제거
                 row.remove();
-
-                // 인덱스 재정렬
                 reindexRows(targetBody);
+
+                // ⭐ 추가: 마지막 행이 제거되면 테이블을 다시 숨김
+                if (targetBody.children.length === 0) {
+                     targetBody.closest('table').classList.add('hidden-table');
+                }
             }
 
             function reindexRows(targetBody) {
                 const rows = targetBody.querySelectorAll('tr');
 
                 rows.forEach((row, index) => {
-                    // data-index 업데이트
                     row.setAttribute('data-index', index);
 
-                    // 입력 필드의 name 속성 업데이트
                     const inputs = row.querySelectorAll('[name]');
                     inputs.forEach(input => {
                         const oldName = input.getAttribute('name');
-                        // 정규식을 사용하여 리스트 인덱스만 정확히 교체
                         const newName = oldName.replace(/\[\d+\]/g, '[' + index + ']');
                         input.setAttribute('name', newName);
                     });
 
-                    // 삭제 버튼의 data-index 업데이트
                     const removeButton = row.querySelector('.remove-row-btn');
                     if (removeButton) {
                         removeButton.setAttribute('data-index', index);
@@ -440,7 +490,6 @@
             // 이벤트 위임으로 '-' 버튼 처리 (tbody 클릭 이벤트 리스너)
             document.querySelectorAll('.resume-table tbody').forEach(tbody => {
                 tbody.addEventListener('click', function(event) {
-                    // event.target이 버튼이거나 버튼의 자식 요소일 경우 (아이콘 등) 처리
                     const button = event.target.closest('.remove-row-btn');
                     if (button) {
                         const row = button.closest('tr');
