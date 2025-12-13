@@ -2,7 +2,7 @@ package com.example.resumesite.controller;
 
 import com.example.resumesite.domain.User;
 import com.example.resumesite.security.CustomUserDetails;
-import com.example.resumesite.service.ResumeService; // ⭐ 누락된 ResumeService import 추가
+import com.example.resumesite.service.ResumeService; // ⭐ 이 import가 필요합니다.
 import com.example.resumesite.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
