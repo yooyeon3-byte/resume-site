@@ -41,7 +41,10 @@ public class ResumeForm {
     private List<EducationDto> educationList;
     private List<ExperienceDto> experienceList;
     private List<CertificateDto> certificationList;
-    private List<ActivityDto> activityList; // ⭐ 변경: 대외활동 경험 리스트
+    private List<ActivityDto> activityList;
+
+    @NotBlank(message = "자기소개서는 필수입니다.") // ⭐ 누락 방지: 자기소개서 필드
+    private String selfIntroduction;
 
 
     // from() 메소드 업데이트 (JSON 역직렬화 로직은 생략/가정)
@@ -66,6 +69,10 @@ public class ResumeForm {
         form.setMilitarySpecialty(resume.getMilitarySpecialty());
         form.setMilitaryPeriod(resume.getMilitaryPeriod());
         form.setVeteranBenefit(resume.getVeteranBenefit());
+
+        // 자기소개서 매핑 (단순 필드)
+        form.setSelfIntroduction(resume.getSelfIntroduction());
+
 
         // List 필드 역직렬화 및 매핑 (복잡하여 로직 생략)
         // form.setEducationList(JsonConverter.deserialize(resume.getEducationHistory()));
@@ -100,7 +107,7 @@ public class ResumeForm {
     }
 
     @Data
-    public static class ActivityDto { // ⭐ 대외활동 경험 DTO
+    public static class ActivityDto { // 대외활동 경험 DTO
         private String activityName;
         private String period;
         private String organization;

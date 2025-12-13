@@ -48,7 +48,10 @@ public class Resume {
     private String certificationsAndSkills; // 자격 및 기술 리스트 (JSON)
 
     @Lob @Column(nullable = false)
-    private String extracurricularActivities; // ⭐ 변경: 대외활동 경험 리스트 (JSON)
+    private String extracurricularActivities; // 대외활동 경험 리스트 (JSON)
+
+    @Lob @Column(nullable = false) // ⭐ 복구: 자기소개서 필드 복구
+    private String selfIntroduction;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

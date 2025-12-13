@@ -4,13 +4,15 @@
       layout:decorate="~{fragments/layout}">
 <head>
     <style>
-        /* 이력서 폼 전용 스타일 추가 */
+        /* 이력서 폼 전용 스타일 추가 및 개선 */
         .resume-container {
             max-width: 900px;
             margin: 0 auto;
-            border: 2px solid #ccc;
+            /* 기존 두꺼운 테두리 제거 및 그림자 유지 */
+            border: 1px solid var(--color-border);
             padding: 20px;
             background-color: white;
+            box-shadow: var(--shadow-md);
         }
         .resume-table {
             width: 100%;
@@ -19,15 +21,16 @@
             margin-bottom: 20px;
         }
         .resume-table th, .resume-table td {
-            border: 1px solid #ccc;
+            border: 1px solid #e0e0e0; /* 연한 경계선 */
             padding: 5px;
             font-size: 14px;
             height: 40px;
         }
         .resume-table th {
-            background-color: #f0f0f0;
+            background-color: #f7f7f7; /* 배경색 연하게 변경 */
             text-align: center;
             font-weight: 600;
+            color: var(--color-text);
         }
         .resume-table input[type="text"], .resume-table input[type="email"], .resume-table select {
             width: 100%;
@@ -38,42 +41,69 @@
         }
         .p-0 { padding: 0 !important; }
         .resume-section-title {
-            font-size: 16px;
+            font-size: 18px; /* 제목 크기 약간 키움 */
             font-weight: 700;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--color-primary); /* 구분선 색상 강조 */
             padding-bottom: 5px;
             display: flex;
             align-items: center;
+            color: var(--color-primary); /* 제목 색상 변경 */
         }
         .photo-box {
             width: 120px;
             height: 160px;
-            border: 1px solid #ccc;
+            border: 1px dashed var(--color-border); /* 점선 테두리 */
             text-align: center;
             line-height: 160px;
             overflow: hidden;
             display: inline-block;
             cursor: pointer;
-            background-color: #f9f9f9;
+            background-color: #fafafa;
         }
         .photo-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .remove-row-btn {
-            padding: 5px 10px;
-            font-size: 14px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            cursor: pointer;
+
+        /* ⭐ 기능 버튼 디자인 개선 및 크기 조정 */
+        .control-btn {
+            padding: 3px 8px; /* 패딩을 줄여 버튼을 작게 만듦 */
+            font-size: 16px;
+            line-height: 1; /* 높이를 글자 크기에 맞춤 */
+            border-radius: 4px;
+            box-shadow: none;
+            transition: all 0.2s;
         }
-        /* 기존 style.css의 .card 스타일 오버라이드 방지 */
-        .card { box-shadow: none; padding: 0; }
-        .card-body { padding: 30px; }
+        .add-row-btn {
+            background-color: var(--color-cta-green);
+            color: white;
+            padding: 3px 8px;
+            margin-left: 10px !important;
+        }
+        .remove-row-btn {
+            background-color: var(--color-danger);
+            color: white;
+            width: 30px; /* 고정 너비 */
+            height: 30px; /* 고정 높이 */
+            padding: 0;
+            line-height: 30px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 테이블 내부 입력 필드와 버튼 간격 조정 */
+        .input-group-row {
+             display: flex;
+             align-items: center;
+        }
+        .input-group-row input {
+            flex-grow: 1;
+            border-right: none !important;
+        }
     </style>
 </head>
 
@@ -140,7 +170,7 @@
             </div>
 
 
-            <h3 class="resume-section-title">■ 학력 사항<button type="button" class="btn btn-primary small ms-2 add-row-btn" data-target="education-body">+</button></h3>
+            <h3 class="resume-section-title">■ 학력 사항<button type="button" class="btn control-btn add-row-btn" data-target="education-body">+</button></h3>
             <table class="resume-table mb-4">
                 <thead>
                 <tr>
@@ -156,9 +186,9 @@
                     <td class="p-0"><input type="text" class="form-control" th:field="*{educationList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
                     <td class="p-0"><input type="text" class="form-control" th:field="*{educationList[__${stat.index}__].major}" placeholder="전공"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" th:field="*{educationList[__${stat.index}__].notes}" placeholder="졸업/재학/휴학">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="education-body" data-index="__${stat.index}__">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" th:field="*{educationList[__${stat.index}__].notes}" placeholder="졸업/재학/휴학">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="education-body" data-index="__${stat.index}__">-</button>
                         </div>
                     </td>
                 </tr>
@@ -195,7 +225,7 @@
                 </tr>
             </table>
 
-            <h3 class="resume-section-title">■ 경력 사항<button type="button" class="btn btn-primary small ms-2 add-row-btn" data-target="experience-body">+</button></h3>
+            <h3 class="resume-section-title">■ 경력 사항<button type="button" class="btn control-btn add-row-btn" data-target="experience-body">+</button></h3>
             <table class="resume-table mb-4">
                 <thead>
                 <tr>
@@ -209,16 +239,16 @@
                     <td class="p-0"><input type="text" class="form-control" th:field="*{experienceList[__${stat.index}__].companyName}" placeholder="회사명/직위" required></td>
                     <td class="p-0"><input type="text" class="form-control" th:field="*{experienceList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" th:field="*{experienceList[__${stat.index}__].responsibility}" placeholder="담당 업무 및 주요 성과">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="experience-body" data-index="__${stat.index}__">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" th:field="*{experienceList[__${stat.index}__].responsibility}" placeholder="담당 업무 및 주요 성과">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="experience-body" data-index="__${stat.index}__">-</button>
                         </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
 
-            <h3 class="resume-section-title">■ 자격증/면허증<button type="button" class="btn btn-primary small ms-2 add-row-btn" data-target="certificate-body">+</button></h3>
+            <h3 class="resume-section-title">■ 자격증/면허증<button type="button" class="btn control-btn add-row-btn" data-target="certificate-body">+</button></h3>
             <table class="resume-table mb-4">
                 <thead>
                 <tr>
@@ -232,16 +262,16 @@
                     <td class="p-0"><input type="text" class="form-control" th:field="*{certificationList[__${stat.index}__].certificateName}" placeholder="자격증명" required></td>
                     <td class="p-0"><input type="text" class="form-control" th:field="*{certificationList[__${stat.index}__].acquisitionDate}" placeholder="YYYY.MM.DD"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" th:field="*{certificationList[__${stat.index}__].publisher}" placeholder="발행처">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="certificate-body" data-index="__${stat.index}__">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" th:field="*{certificationList[__${stat.index}__].publisher}" placeholder="발행처">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="certificate-body" data-index="__${stat.index}__">-</button>
                         </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
 
-            <h3 class="resume-section-title">■ 대외활동 경험<button type="button" class="btn btn-primary small ms-2 add-row-btn" data-target="activity-body">+</button></h3>
+            <h3 class="resume-section-title">■ 대외활동 경험<button type="button" class="btn control-btn add-row-btn" data-target="activity-body">+</button></h3>
             <table class="resume-table mb-4">
                 <thead>
                 <tr>
@@ -257,9 +287,9 @@
                     <td class="p-0"><input type="text" class="form-control" th:field="*{activityList[__${stat.index}__].period}" placeholder="YYYY.MM~YYYY.MM"></td>
                     <td class="p-0"><input type="text" class="form-control" th:field="*{activityList[__${stat.index}__].organization}" placeholder="기관명/주최"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" th:field="*{activityList[__${stat.index}__].details}" placeholder="내용/비고">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="activity-body" data-index="__${stat.index}__">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" th:field="*{activityList[__${stat.index}__].details}" placeholder="내용/비고">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="activity-body" data-index="__${stat.index}__">-</button>
                         </div>
                     </td>
                 </tr>
@@ -290,9 +320,9 @@
                     <td class="p-0"><input type="text" class="form-control" name="educationList[INDEX_PLACEHOLDER].period" placeholder="YYYY.MM~YYYY.MM"></td>
                     <td class="p-0"><input type="text" class="form-control" name="educationList[INDEX_PLACEHOLDER].major" placeholder="전공"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" name="educationList[INDEX_PLACEHOLDER].notes" placeholder="졸업/재학/휴학">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="education-body" data-index="INDEX_PLACEHOLDER">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" name="educationList[INDEX_PLACEHOLDER].notes" placeholder="졸업/재학/휴학">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="education-body" data-index="INDEX_PLACEHOLDER">-</button>
                         </div>
                     </td>
                 </tr>
@@ -303,9 +333,9 @@
                     <td class="p-0"><input type="text" class="form-control" name="experienceList[INDEX_PLACEHOLDER].companyName" placeholder="회사명/직위" required></td>
                     <td class="p-0"><input type="text" class="form-control" name="experienceList[INDEX_PLACEHOLDER].period" placeholder="YYYY.MM~YYYY.MM"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" name="experienceList[INDEX_PLACEHOLDER].responsibility" placeholder="담당 업무 및 주요 성과">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="experience-body" data-index="INDEX_PLACEHOLDER">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" name="experienceList[INDEX_PLACEHOLDER].responsibility" placeholder="담당 업무 및 주요 성과">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="experience-body" data-index="INDEX_PLACEHOLDER">-</button>
                         </div>
                     </td>
                 </tr>
@@ -316,24 +346,24 @@
                     <td class="p-0"><input type="text" class="form-control" name="certificationList[INDEX_PLACEHOLDER].certificateName" placeholder="자격증명" required></td>
                     <td class="p-0"><input type="text" class="form-control" name="certificationList[INDEX_PLACEHOLDER].acquisitionDate" placeholder="YYYY.MM.DD"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" name="certificationList[INDEX_PLACEHOLDER].publisher" placeholder="발행처">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="certificate-body" data-index="INDEX_PLACEHOLDER">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" name="certificationList[INDEX_PLACEHOLDER].publisher" placeholder="발행처">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="certificate-body" data-index="INDEX_PLACEHOLDER">-</button>
                         </div>
                     </td>
                 </tr>
             `;
 
-            // ⭐ 대외활동 경험 템플릿 (ActivityDto 기준)
+            // 대외활동 경험 템플릿
             const activityRowTemplate = `
                 <tr data-index="INDEX_PLACEHOLDER">
                     <td class="p-0"><input type="text" class="form-control" name="activityList[INDEX_PLACEHOLDER].activityName" placeholder="활동명" required></td>
                     <td class="p-0"><input type="text" class="form-control" name="activityList[INDEX_PLACEHOLDER].period" placeholder="YYYY.MM~YYYY.MM"></td>
                     <td class="p-0"><input type="text" class="form-control" name="activityList[INDEX_PLACEHOLDER].organization" placeholder="기관명/주최"></td>
                     <td class="p-0">
-                        <div class="d-flex">
-                            <input type="text" class="form-control border-end-0" name="activityList[INDEX_PLACEHOLDER].details" placeholder="내용/비고">
-                            <button type="button" class="btn btn-danger remove-row-btn" data-target="activity-body" data-index="INDEX_PLACEHOLDER">-</button>
+                        <div class="input-group-row">
+                            <input type="text" class="form-control" name="activityList[INDEX_PLACEHOLDER].details" placeholder="내용/비고">
+                            <button type="button" class="btn control-btn remove-row-btn" data-target="activity-body" data-index="INDEX_PLACEHOLDER">-</button>
                         </div>
                     </td>
                 </tr>
@@ -410,8 +440,10 @@
             // 이벤트 위임으로 '-' 버튼 처리 (tbody 클릭 이벤트 리스너)
             document.querySelectorAll('.resume-table tbody').forEach(tbody => {
                 tbody.addEventListener('click', function(event) {
-                    if (event.target.classList.contains('remove-row-btn')) {
-                        const row = event.target.closest('tr');
+                    // event.target이 버튼이거나 버튼의 자식 요소일 경우 (아이콘 등) 처리
+                    const button = event.target.closest('.remove-row-btn');
+                    if (button) {
+                        const row = button.closest('tr');
                         if (row) {
                             removeRow(row);
                         }

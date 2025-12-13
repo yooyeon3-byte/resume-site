@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper; // 필수: JSON 직렬화를 위한 ObjectMapper 추가
 
 @Service
 @RequiredArgsConstructor
@@ -19,22 +20,54 @@ public class ResumeService {
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
 
-    // ⭐ create 메소드 로직 (500 Error 해결 핵심: Managed User Entity 사용)
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private String toJson(Object obj) {
+        try {
+            if (obj == null || (obj instanceof List && ((List<?>) obj).isEmpty())) {
+                return "[]";
+            }
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("JSON 직렬화에 실패했습니다: " + e.getMessage());
+        }
+    }
+
     public Resume create(User owner, ResumeForm form) {
 
-        // 1. Detached User 객체의 ID를 사용하여 Managed User 객체를 조회합니다.
         User managedOwner = userRepository.findById(owner.getId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자 ID를 찾을 수 없습니다."));
 
-        // 2. Managed User 객체를 사용하여 Resume 엔티티를 빌드 및 저장합니다.
+        // ⭐ 수정된 부분: 모든 필드를 새로운 DTO 구조에 맞게 매핑
         Resume resume = Resume.builder()
+                // 인적 사항 및 사진 경로
                 .title(form.getTitle())
+                .photoPath(form.getExistingPhotoPath())
+                .name(form.getName())
+                .birthDate(form.getBirthDate())
+                .address(form.getAddress())
+                .phone(form.getPhone())
+                .email(form.getEmail())
                 .personalContact(form.getPersonalContact())
-                .educationHistory(form.getEducationHistory())
-                .experienceHistory(form.getExperienceHistory())
-                .certificationsAndSkills(form.getCertificationsAndSkills())
-                .selfIntroduction(form.getSelfIntroduction())
-                .owner(managedOwner) // Managed Entity 사용
+
+                // 병역 사항
+                .militaryStatus(form.getMilitaryStatus())
+                .militaryBranch(form.getMilitaryBranch())
+                .militaryRank(form.getMilitaryRank())
+                .militarySpecialty(form.getMilitarySpecialty())
+                .militaryPeriod(form.getMilitaryPeriod())
+                .veteranBenefit(form.getVeteranBenefit())
+
+                // 구조화된 리스트 (JSON 직렬화)
+                .educationHistory(toJson(form.getEducationList()))
+                .experienceHistory(toJson(form.getExperienceList()))
+                .certificationsAndSkills(toJson(form.getCertificationList()))
+                .extracurricularActivities(toJson(form.getActivityList()))
+
+                // 자기소개서
+                .selfIntroduction(form.getSelfIntroduction()) // ⭐ 문제의 필드 포함 완료
+
+                .owner(managedOwner)
                 .build();
         return resumeRepository.save(resume);
     }
@@ -46,17 +79,36 @@ public class ResumeService {
             throw new IllegalStateException("본인 이력서만 수정할 수 있습니다.");
         }
 
-        // update 시에도 Managed Entity 사용
         User managedOwner = userRepository.findById(owner.getId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 신규 필드 업데이트 로직
+        // ⭐ 수정된 부분: 모든 필드를 새로운 DTO 구조에 맞게 매핑
+        // 인적 사항 및 사진 경로
         resume.setTitle(form.getTitle());
+        resume.setPhotoPath(form.getExistingPhotoPath());
+        resume.setName(form.getName());
+        resume.setBirthDate(form.getBirthDate());
+        resume.setAddress(form.getAddress());
+        resume.setPhone(form.getPhone());
+        resume.setEmail(form.getEmail());
         resume.setPersonalContact(form.getPersonalContact());
-        resume.setEducationHistory(form.getEducationHistory());
-        resume.setExperienceHistory(form.getExperienceHistory());
-        resume.setCertificationsAndSkills(form.getCertificationsAndSkills());
-        resume.setSelfIntroduction(form.getSelfIntroduction());
+
+        // 병역 사항
+        resume.setMilitaryStatus(form.getMilitaryStatus());
+        resume.setMilitaryBranch(form.getMilitaryBranch());
+        resume.setMilitaryRank(form.getMilitaryRank());
+        resume.setMilitarySpecialty(form.getMilitarySpecialty());
+        resume.setMilitaryPeriod(form.getMilitaryPeriod());
+        resume.setVeteranBenefit(form.getVeteranBenefit());
+
+        // 구조화된 리스트 (JSON 직렬화)
+        resume.setEducationHistory(toJson(form.getEducationList()));
+        resume.setExperienceHistory(toJson(form.getExperienceList()));
+        resume.setCertificationsAndSkills(toJson(form.getCertificationList()));
+        resume.setExtracurricularActivities(toJson(form.getActivityList()));
+
+        // 자기소개서
+        resume.setSelfIntroduction(form.getSelfIntroduction()); // ⭐ 문제의 필드 포함 완료
 
         return resume;
     }
