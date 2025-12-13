@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{fragments/layout}">
+<body>
+<th:block layout:fragment="content">
+
+    <div class="page-header">
+        <h2 th:text="${post.title}">게시글 제목</h2>
+        <a th:href="@{/board}" class="btn-outline small">목록으로</a>
+    </div>
+
+    <div class="card detail-section" style="padding-top: 15px; margin-bottom: 20px;">
+        <p class="muted" style="margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px;">
+            작성자: <span th:text="${post.author.name}"></span> |
+            작성일: <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></span> |
+            조회수: <span th:text="${post.viewCount}"></span>
+        </p>
+
+        <pre class="content-text" th:text="${post.content}" style="min-height: 200px; padding: 15px 0;"></pre>
+
+        <div class="card-actions" sec:authorize="isAuthenticated()">
+            <th:block th:if="${#authentication.principal.user.id == post.author.id}">
+                <a th:href="@{'/board/' + ${post.id} + '/edit'}" class="btn-outline small">수정</a>
+                <form th:action="@{'/board/' + ${post.id} + '/delete'}" method="post"
+                      onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
+                    <button type="submit" class="btn-danger small">삭제</button>
+                </form>
+            </th:block>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

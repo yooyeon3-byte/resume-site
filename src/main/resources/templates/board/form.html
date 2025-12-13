@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<body>
+<th:block layout:fragment="content">
+
+    <div class="card resume-container" style="max-width: 700px; padding: 30px;">
+        <h2 th:text="${boardForm.id == null ? '새 게시글 작성' : '게시글 수정'}"
+            class="resume-section-title" style="margin-bottom: 25px;"></h2>
+
+        <form th:action="${boardForm.id == null ? '/board' : '/board/' + boardForm.id}"
+              method="post" th:object="${boardForm}">
+
+            <label>제목
+                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요 (필수)">
+                <p th:errors="*{title}" class="field-error"></p>
+            </label>
+
+            <label>내용
+                <textarea th:field="*{content}" rows="15"
+                          placeholder="내용을 입력하세요 (필수)"
+                          style="border: 1px solid var(--color-border);"></textarea>
+                <p th:errors="*{content}" class="field-error"></p>
+            </label>
+
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <div class="error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+            </div>
+
+            <button class="btn-primary full large" type="submit" style="margin-top: 20px;">
+                <span th:text="${boardForm.id == null ? '작성 완료' : '수정 완료'}"></span>
+            </button>
+        </form>
+    </div>
+</th:block>
+</body>
+</html>

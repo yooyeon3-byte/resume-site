@@ -11,16 +11,16 @@
     <div class="logo">
         <a th:href="@{/}">Yuyeon<span>Site</span></a> </div>
     <div class="nav-right">
-        <th:block sec:authorize="isAuthenticated()">
-            <span class="nav-link" th:text="${#authentication.name} + '님'">사용자명님</span> <a th:href="@{/resumes}" class="nav-link">내 이력서</a>
-            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/resumes}" class="nav-link active-link" style="font-weight: bold;">관리자</a>
+        <a th:href="@{/board}" class="nav-link">자유 게시판</a> <th:block sec:authorize="isAuthenticated()">
+        <span class="nav-link" th:text="${#authentication.name} + '님'">사용자명님</span> <a th:href="@{/resumes}" class="nav-link">내 이력서</a>
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/resumes}" class="nav-link active-link" style="font-weight: bold;">관리자</a>
 
-            <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" th:href="@{/company/resumes}" class="nav-link active-link" style="font-weight: bold;">기업 대시보드</a>
+        <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" th:href="@{/company/resumes}" class="nav-link active-link" style="font-weight: bold;">기업 대시보드</a>
 
-            <form th:action="@{/logout}" method="post" style="display: inline;">
-                <button type="submit" class="btn btn-outline small">로그아웃</button>
-            </form>
-        </th:block>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-outline small">로그아웃</button>
+        </form>
+    </th:block>
         <th:block sec:authorize="isAnonymous()">
             <a th:href="@{/login}" class="btn btn-outline small">로그인</a>
             <a th:href="@{/signup}" class="btn btn-primary small">회원가입</a>
