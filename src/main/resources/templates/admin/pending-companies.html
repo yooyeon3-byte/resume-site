@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<body>
+<th:block layout:fragment="content">
+    <div class="page-header">
+        <h2>기업 승인 요청 관리 (관리자)</h2>
+        <a th:href="@{/admin/resumes}" class="btn-outline small">이력서 목록으로</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(pendingUsers)}" class="empty">
+        현재 승인 대기 중인 기업 사용자가 없습니다.
+    </div>
+
+    <table class="table" th:unless="${#lists.isEmpty(pendingUsers)}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>아이디</th>
+            <th>기업명/담당자</th>
+            <th>이메일</th>
+            <th>상태</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${pendingUsers}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td><span class="muted" style="color: orange;">승인 대기</span></td>
+            <td>
+                <form th:action="@{'/admin/companies/' + ${user.id} + '/approve'}" method="post"
+                      onsubmit="return confirm('이 기업을 COMPANY 역할로 승인하시겠습니까?');">
+                    <button type="submit" class="btn-primary small">승인</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</th:block>
+</body>
+</html>

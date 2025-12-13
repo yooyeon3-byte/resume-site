@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam; // ⭐ 추가
 
 @Controller
 @RequiredArgsConstructor
@@ -26,13 +27,19 @@ public class AuthController {
     @PostMapping("/signup")
     public String signup(@Valid @ModelAttribute UserSignupDto dto,
                          BindingResult bindingResult,
-                         Model model) {
+                         Model model,
+                         @RequestParam(value = "roleType", defaultValue = "user") String roleType) { // ⭐ roleType 파라미터 받기
         if (bindingResult.hasErrors()) {
             return "auth/signup";
         }
+
         try {
-            // 첫 회원은 관리자, 나머지는 일반 유저로 하고 싶으면 여기 로직 추가 가능
-            userService.signup(dto, false);
+            userService.signup(dto, false, roleType); // ⭐ roleType 전달
+
+            if ("company".equals(roleType)) {
+                // 기업 회원 가입 성공 시 승인 대기 페이지로 리다이렉트
+                return "redirect:/login?pendingApproval";
+            }
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "auth/signup";

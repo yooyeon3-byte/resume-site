@@ -13,19 +13,32 @@
         <form th:action="@{/signup}" method="post" th:object="${userSignupDto}">
             <label>아이디
                 <input type="text" th:field="*{username}">
-                <p th:errors="*{username}" class="field-error"></p> </label>
+                <p th:errors="*{username}" class="field-error"></p>
+            </label>
             <label>이름
                 <input type="text" th:field="*{name}">
-                <p th:errors="*{name}" class="field-error"></p> </label>
+                <p th:errors="*{name}" class="field-error"></p>
+            </label>
             <label>이메일
                 <input type="email" th:field="*{email}">
-                <p th:errors="*{email}" class="field-error"></p> </label>
+                <p th:errors="*{email}" class="field-error"></p>
+            </label>
             <label>비밀번호
                 <input type="password" th:field="*{password}">
-                <p th:errors="*{password}" class="field-error"></p> </label>
+                <p th:errors="*{password}" class="field-error"></p>
+            </label>
             <label>비밀번호 확인
                 <input type="password" th:field="*{confirmPassword}">
-                <p th:errors="*{confirmPassword}" class="field-error"></p> </label>
+                <p th:errors="*{confirmPassword}" class="field-error"></p>
+            </label>
+
+            <label>
+                <input type="radio" name="roleType" value="user" checked> 일반 사용자
+            </label>
+            <label>
+                <input type="radio" name="roleType" value="company"> 기업 (관리자 승인 필요)
+            </label>
+            <br/>
 
             <button class="btn-primary full large" type="submit">가입하기</button>
         </form>
