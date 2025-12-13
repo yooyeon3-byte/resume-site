@@ -24,10 +24,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        // ⭐ 수정된 부분: URL 매칭을 RequestMatcher.
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스는 무조건 허용
                         .requestMatchers("/", "/login", "/signup", "/css/**").permitAll() // 홈, 로그인, 회원가입은 무조건 허용
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/company/**").hasRole("COMPANY") // ⭐ COMPANY 권한 추가
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
