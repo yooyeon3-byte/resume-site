@@ -10,6 +10,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonProperty; // ⭐ 추가
 
 @Data
 public class ResumeForm {
@@ -32,7 +33,7 @@ public class ResumeForm {
     @NotBlank @Email private String email;
     @NotBlank private String personalContact; // 긴급 연락처
 
-    private String gender;
+    private String gender; // ⭐ 추가: 성별 필드
 
     // -- 병역 사항 --
     private String militaryStatus;
@@ -120,6 +121,19 @@ public class ResumeForm {
         private String endDate;   // ⭐ 추가
         private String major;
         private String notes;
+
+        // ⭐ 호환성 로직
+        @JsonProperty("period")
+        private void setPeriod(String period) {
+            if (period != null && period.contains("~")) {
+                String[] dates = period.split("~");
+                this.startDate = dates[0].trim();
+                this.endDate = dates.length > 1 ? dates[1].trim() : null;
+            } else {
+                this.startDate = period != null ? period.trim() : null;
+                this.endDate = null;
+            }
+        }
     }
 
     @Data
@@ -128,6 +142,19 @@ public class ResumeForm {
         private String startDate; // ⭐ 변경
         private String endDate;   // ⭐ 추가
         private String responsibility;
+
+        // ⭐ 호환성 로직
+        @JsonProperty("period")
+        private void setPeriod(String period) {
+            if (period != null && period.contains("~")) {
+                String[] dates = period.split("~");
+                this.startDate = dates[0].trim();
+                this.endDate = dates.length > 1 ? dates[1].trim() : null;
+            } else {
+                this.startDate = period != null ? period.trim() : null;
+                this.endDate = null;
+            }
+        }
     }
 
     @Data
@@ -144,5 +171,18 @@ public class ResumeForm {
         private String endDate;   // ⭐ 추가
         private String organization;
         private String details;
+
+        // ⭐ 호환성 로직
+        @JsonProperty("period")
+        private void setPeriod(String period) {
+            if (period != null && period.contains("~")) {
+                String[] dates = period.split("~");
+                this.startDate = dates[0].trim();
+                this.endDate = dates.length > 1 ? dates[1].trim() : null;
+            } else {
+                this.startDate = period != null ? period.trim() : null;
+                this.endDate = null;
+            }
+        }
     }
 }

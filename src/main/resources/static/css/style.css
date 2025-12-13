@@ -205,6 +205,7 @@ label {
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="date"], /* ⭐ 수정: date 타입 입력 필드에 디자인 적용 */
 textarea,
 select { /* select 추가 */
     width: 100%;
