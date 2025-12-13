@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스는 무조건 허용
-                        .requestMatchers("/", "/login", "/signup", "/css/**").permitAll() // 홈, 로그인, 회원가입은 무조건 허용
+                        .requestMatchers("/", "/login", "/signup", "/css/**", "/uploads/**").permitAll() // ⭐ 추가: /uploads/** 경로도 접근 허용
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/company/**").hasRole("COMPANY") // ⭐ COMPANY 권한 추가
                         .anyRequest().authenticated()
