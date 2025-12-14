@@ -8,16 +8,21 @@
 
     <div class="page-header">
         <h2 th:text="${resume.title}">이력서 제목</h2>
-        <a th:href="@{/company/resumes}" th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="btn-outline small">목록으로</a>
-        <a th:href="@{/admin/resumes}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="btn-outline small">목록으로</a>
 
-        <div sec:authorize="hasRole('COMPANY')">
-            <form th:action="@{'/company/resumes/' + ${resume.id} + '/toggle-scrap'}" method="post">
-                <button type="submit"
-                        th:classappend="${isScrapped} ? 'btn-danger small' : 'btn-outline small'"
-                        th:text="${isScrapped} ? '⭐ 스크랩 취소' : '⭐ 관심 이력서 등록'"></button>
-            </form>
-        </div>
+        <th:block th:unless="${isDocxDownload}">
+            <a th:href="@{/company/resumes}" th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="btn-outline small">목록으로</a>
+            <a th:href="@{/admin/resumes}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="btn-outline small">목록으로</a>
+        </th:block>
+
+        <th:block th:unless="${isDocxDownload}">
+            <div sec:authorize="hasRole('COMPANY')">
+                <form th:action="@{'/company/resumes/' + ${resume.id} + '/toggle-scrap'}" method="post">
+                    <button type="submit"
+                            th:classappend="${isScrapped} ? 'btn-danger small' : 'btn-outline small'"
+                            th:text="${isScrapped} ? '⭐ 스크랩 취소' : '⭐ 관심 이력서 등록'"></button>
+                </form>
+            </div>
+        </th:block>
     </div>
 
     <p class="muted" style="margin-top: -20px; margin-bottom: 25px;">
