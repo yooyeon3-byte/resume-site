@@ -187,15 +187,9 @@ a:hover {
     box-shadow: none;
 }
 
-/* ⭐ 전환 버튼을 위한 고정 너비 클래스 */
+/* ⭐ 추가: 전환 버튼을 위한 고정 너비 클래스 */
 .btn-toggle-width {
-    width: 130px; /* 고정 너비 적용 */
-    text-align: center;
-}
-
-/* ⭐ 수정: 수정/삭제 버튼을 위한 고정 너비 클래스를 90px로 확대 */
-.btn-action-width {
-    width: 90px; /* 고정 너비 적용 (80px -> 90px로 확대) */
+    width: 100px; /* 고정 너비 적용 */
     text-align: center;
 }
 
