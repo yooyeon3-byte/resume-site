@@ -15,8 +15,7 @@
             <th>제목</th>
             <th>작성자</th>
             <th>작성일</th>
-            <th></th>
-        </tr>
+            <th>액션</th> </tr>
         </thead>
         <tbody>
         <tr th:each="resume : ${resumes}">
@@ -26,6 +25,12 @@
             <td th:text="${#temporals.format(resume.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
             <td>
                 <a th:href="@{'/admin/resumes/' + ${resume.id}}" class="btn-outline small">상세</a>
+
+                <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
+                      onsubmit="return confirm('관리자 권한으로 이 이력서를 영구 삭제하시겠습니까?');"
+                      style="display: inline-block; margin-left: 5px;">
+                    <button type="submit" class="btn-danger small">삭제</button>
+                </form>
             </td>
         </tr>
         </tbody>
