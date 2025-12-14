@@ -23,6 +23,12 @@ import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.example.resumesite.dto.ResumeForm.EducationDto;
+import com.example.resumesite.dto.ResumeForm.ExperienceDto;
+import com.example.resumesite.dto.ResumeForm.CertificateDto;
+import com.example.resumesite.dto.ResumeForm.ActivityDto;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,6 +39,21 @@ public class ResumeController {
     private final DocxService docxService;
     private static final String UPLOAD_DIR = "uploads/photos";
     private static final String UPLOADS_ROOT_DIR = "uploads"; // 사용하지 않지만 기존 변수 유지
+
+    // ⭐ 추가: JSON 역직렬화 유틸리티 (Docx Export 전용)
+    private <T> List<T> deserializeJson(String json, TypeReference<List<T>> typeRef) {
+        if (json == null || json.trim().equals("[]") || json.trim().isEmpty()) {
+            return List.of();
+        }
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(json, typeRef);
+        } catch (IOException e) {
+            // DOCX 생성 중 JSON 파싱 오류 발생 시 RuntimeException throw
+            throw new RuntimeException("이력서 데이터 파싱 실패: " + e.getMessage(), e);
+        }
+    }
+
 
     @GetMapping
     public String myResumes(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -137,28 +158,46 @@ public class ResumeController {
             Path rootPath = Paths.get(System.getProperty("user.dir"));
             String baseUri = rootPath.toUri().toASCIIString(); // 프로젝트 루트 경로 URI
 
-            // ⭐ 수정: 이미지 로딩 관련 오류를 회피/확인하기 위해 절대 경로를 강제로 비웁니다.
             String absolutePhotoUri = "";
-            /*
             if (resume.getPhotoPath() != null && !resume.getPhotoPath().isEmpty()) {
-                // ... (기존의 복잡한 절대 경로 계산 로직 주석 처리)
+                // 이미지 로직 복구
+                String webPath = resume.getPhotoPath().startsWith("/")
+                        ? resume.getPhotoPath().substring(1)
+                        : resume.getPhotoPath();
+
+                Path fullPath = Paths.get(System.getProperty("user.dir"), webPath);
+                absolutePhotoUri = fullPath.toUri().toASCIIString();
             }
-            */
+
+            // ⭐ 추가: JSON 역직렬화하여 Thymeleaf 템플릿에 직접 사용될 수 있도록 준비
+            List<EducationDto> educationList = deserializeJson(
+                    resume.getEducationHistory(), new TypeReference<List<EducationDto>>() {});
+            List<ExperienceDto> experienceList = deserializeJson(
+                    resume.getExperienceHistory(), new TypeReference<List<ExperienceDto>>() {});
+            List<CertificateDto> certificationList = deserializeJson(
+                    resume.getCertificationsAndSkills(), new TypeReference<List<CertificateDto>>() {});
+            List<ActivityDto> activityList = deserializeJson(
+                    resume.getExtracurricularActivities(), new TypeReference<List<ActivityDto>>() {});
+
 
             // DOCX 변환 시 필요한 플래그와 변수들을 안전하게 추가합니다.
             Map<String, Object> variables = Map.of(
                     "resume", resume,
                     "isScrapped", false,
                     "isDocxDownload", true, // 템플릿의 조건부 렌더링을 위해 필요
-                    "absolutePhotoUri", absolutePhotoUri // ⭐ 강제로 비웠으므로, 이미지 태그는 렌더링되지 않습니다.
+                    "absolutePhotoUri", absolutePhotoUri, // 계산된 절대 경로 URI 전달
+                    "educationList", educationList,        // ⭐ 추가
+                    "experienceList", experienceList,      // ⭐ 추가
+                    "certificationList", certificationList,// ⭐ 추가
+                    "activityList", activityList           // ⭐ 추가
             );
 
             // 2. 템플릿을 HTML로 렌더링 (admin/resume-detail.html 템플릿 재활용)
             String htmlContent = docxService.renderHtml("admin/resume-detail", variables);
 
             // 3. HTML을 DOCX로 변환
-            // ⭐ Base URI가 포함된 수정된 DocxService 메서드 호출 (이전 단계에서 이미 적용됨)
-            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent, baseUri);z
+            // ⭐ Base URI가 포함된 수정된 DocxService 메서드 호출
+            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent, baseUri);
 
             // 4. HTTP 응답 헤더 설정
             HttpHeaders headers = new HttpHeaders();

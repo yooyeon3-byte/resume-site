@@ -30,8 +30,10 @@ public class DocxService {
 
     /**
      * HTML 문자열을 DOCX (Word 파일) 바이트 배열로 변환합니다.
+     * @param htmlContent 렌더링된 HTML 내용
+     * @param imageBaseUri 이미지 상대 경로를 해석할 Base URI (주로 파일 시스템 URI)
      */
-    public byte[] convertHtmlToDocx(String htmlContent, String imageBaseUri) throws Exception { // ⭐ imageBaseUri 파라미터 추가
+    public byte[] convertHtmlToDocx(String htmlContent, String imageBaseUri) throws Exception {
         // 1. DOCX 패키지 생성
         WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
@@ -41,7 +43,7 @@ public class DocxService {
 
         // 3. HTML을 DOCX 문서 요소로 변환하여 추가
         documentPart.getContent().addAll(
-                // ⭐ 수정: imageBaseUri를 두 번째 인수로 전달합니다.
+                // Base URI를 두 번째 인수로 전달합니다.
                 xhtmlImporter.convert(htmlContent, imageBaseUri)
         );
 
