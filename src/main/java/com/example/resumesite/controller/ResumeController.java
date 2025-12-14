@@ -64,7 +64,7 @@ public class ResumeController {
     public String create(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @Valid @ModelAttribute ResumeForm form,
                          BindingResult bindingResult,
-                         // ⭐ required = false 유지 (이전 수정)
+                         // required = false 유지
                          @RequestParam(value = "photoFile", required = false) MultipartFile photoFile) throws IOException {
         if (bindingResult.hasErrors()) {
             return "resume/form";
@@ -103,7 +103,7 @@ public class ResumeController {
                          @PathVariable Long id,
                          @Valid @ModelAttribute ResumeForm form,
                          BindingResult bindingResult,
-                         // ⭐ required = false 유지 (이전 수정)
+                         // required = false 유지
                          @RequestParam(value = "photoFile", required = false) MultipartFile photoFile) throws IOException {
         if (bindingResult.hasErrors()) {
             return "resume/form";
@@ -133,24 +133,21 @@ public class ResumeController {
         try {
             // 1. 모델 데이터 준비 (이력서 상세 정보)
 
-            // 프로젝트 루트 경로를 가져옵니다.
-            String rootPath = System.getProperty("user.dir");
-
-            // ⭐ DOCX 변환 시 사용할 사진의 절대 경로 URI를 계산합니다.
+            // ⭐ DOCX 변환 시 사용할 사진의 절대 경로 URI를 계산합니다. (Docx4j 호환성 강화)
             String absolutePhotoUri = "";
             if (resume.getPhotoPath() != null && !resume.getPhotoPath().isEmpty()) {
                 // `resume.getPhotoPath()`: `/uploads/photos/...` 형태
 
-                // 1. 선행 `/` 제거 (Paths.get에서 절대 경로로 오인되는 것을 방지)
-                String pathWithoutLeadingSlash = resume.getPhotoPath().startsWith("/")
+                // 1. 웹 경로(/uploads/photos/...)에서 선행 슬래시 제거 (있는 경우)
+                String webPath = resume.getPhotoPath().startsWith("/")
                         ? resume.getPhotoPath().substring(1)
                         : resume.getPhotoPath();
 
-                // 2. 프로젝트 루트 경로와 결합하여 절대 파일 시스템 경로 생성
-                Path fullPath = Paths.get(rootPath, pathWithoutLeadingSlash);
+                // 2. 프로젝트 루트 경로와 결합하여 절대 파일 시스템 경로를 얻습니다.
+                Path fullPath = Paths.get(System.getProperty("user.dir"), webPath);
 
-                // 3. file:/// 형식의 절대 경로 URI 생성 (이것이 DOCX 생성기에서 이미지를 로드할 수 있는 방식입니다.)
-                absolutePhotoUri = fullPath.toUri().toString();
+                // 3. URI 생성 후 템플릿에 전달. Docx4j에서 인코딩 문제를 피하기 위해 toASCIIString()을 사용하여 URI를 완벽하게 인코딩합니다.
+                absolutePhotoUri = fullPath.toUri().toASCIIString();
             }
 
             // DOCX 변환 시 필요한 플래그와 변수들을 안전하게 추가합니다.
@@ -180,7 +177,7 @@ public class ResumeController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            // DOCX 생성 실패 시 오류 메시지 반환 (디버깅을 위해 메시지를 포함)
+            // 오류 메시지를 응답 본문에 담아 반환하여 디버깅에 도움을 줄 수 있습니다.
             return ResponseEntity.status(500).body(("DOCX 생성 중 오류가 발생했습니다: " + e.getMessage()).getBytes());
         }
     }
