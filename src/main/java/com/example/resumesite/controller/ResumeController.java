@@ -133,20 +133,22 @@ public class ResumeController {
         try {
             // 1. 모델 데이터 준비 (이력서 상세 정보)
 
-            // ⭐ DOCX 변환 시 사용할 사진의 절대 경로 URI를 계산합니다. (Docx4j 호환성 강화)
+            // ⭐ Docx4j가 이미지를 로드할 Base URI 설정
+            Path rootPath = Paths.get(System.getProperty("user.dir"));
+            String baseUri = rootPath.toUri().toASCIIString(); // 프로젝트 루트 경로 URI
+
             String absolutePhotoUri = "";
             if (resume.getPhotoPath() != null && !resume.getPhotoPath().isEmpty()) {
                 // `resume.getPhotoPath()`: `/uploads/photos/...` 형태
-
-                // 1. 웹 경로(/uploads/photos/...)에서 선행 슬래시 제거 (있는 경우)
                 String webPath = resume.getPhotoPath().startsWith("/")
                         ? resume.getPhotoPath().substring(1)
                         : resume.getPhotoPath();
 
                 // 2. 프로젝트 루트 경로와 결합하여 절대 파일 시스템 경로를 얻습니다.
+                // 이 경로는 템플릿의 img src 속성에 그대로 사용됨.
                 Path fullPath = Paths.get(System.getProperty("user.dir"), webPath);
 
-                // 3. URI 생성 후 템플릿에 전달. Docx4j에서 인코딩 문제를 피하기 위해 toASCIIString()을 사용하여 URI를 완벽하게 인코딩합니다.
+                // 3. URI 생성 후 템플릿에 전달.
                 absolutePhotoUri = fullPath.toUri().toASCIIString();
             }
 
@@ -162,7 +164,8 @@ public class ResumeController {
             String htmlContent = docxService.renderHtml("admin/resume-detail", variables);
 
             // 3. HTML을 DOCX로 변환
-            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent);
+            // ⭐ 수정: baseUri를 DocxService에 전달
+            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent, baseUri);
 
             // 4. HTTP 응답 헤더 설정
             HttpHeaders headers = new HttpHeaders();
