@@ -25,10 +25,10 @@
                             th:text="${resume.isPublic} ? '비공개 전환' : '공개 전환'"></button>
                 </form>
 
-                <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline small">수정</a>
+                <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline small btn-action-width">수정</a>
                 <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
                       onsubmit="return confirm('삭제할까요?');">
-                    <button class="btn-danger small" type="submit">삭제</button>
+                    <button class="btn-danger small btn-action-width" type="submit">삭제</button>
                 </form>
             </div>
         </div>
