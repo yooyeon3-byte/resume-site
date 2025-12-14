@@ -128,16 +128,18 @@ public class ResumeController {
         return "redirect:/resumes";
     }
 
-    // ⭐ 추가: 이력서 공개 여부 토글
+    // ⭐ 수정: 이력서 공개 여부 토글 (로직을 Service로 위임)
     @PostMapping("/{id}/toggle-public")
     public String togglePublic(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        var resume = resumeService.findById(id);
-        if (!resume.getOwner().getId().equals(userDetails.getUser().getId())) {
+        try {
+            // ⭐ Service의 쓰기 가능한 트랜잭션 메서드를 호출
+            resumeService.togglePublicStatus(id, userDetails.getUser());
+        } catch (IllegalStateException e) {
             return "redirect:/resumes?error=unauthorized";
+        } catch (Exception e) {
+            // 실패 처리 (예: 이력서 ID를 찾을 수 없는 경우)
+            return "redirect:/resumes?error=toggleFailed";
         }
-
-        // 이력서 엔티티 직접 수정
-        resume.setIsPublic(!resume.getIsPublic()); // 상태 반전
         return "redirect:/resumes";
     }
 }

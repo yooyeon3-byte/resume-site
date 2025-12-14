@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface ResumeRepository extends JpaRepository<Resume, Long> {
     List<Resume> findByOwner(User owner);
+
+    // ⭐ 추가: 공개 여부(isPublic)가 true인 이력서만 조회
+    List<Resume> findByIsPublic(Boolean isPublic);
 }
