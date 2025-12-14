@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title layout:title-default="Yuyeon Site">Yuyeon Site</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}"> </head>
+    <link th:unless="${isDocxDownload}" rel="stylesheet" th:href="@{/css/style.css}"> </head>
 <body>
 <header class="navbar">
     <div class="logo">

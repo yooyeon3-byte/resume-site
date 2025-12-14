@@ -129,11 +129,11 @@ public class ResumeController {
 
         try {
             // 1. 모델 데이터 준비 (이력서 상세 정보)
-            // ⭐ 수정: DOCX 변환 템플릿(admin/resume-detail)이 사용하는 isScrapped 변수가 누락되어
-            //         템플릿 파싱 오류가 발생하므로, 안전하게 false로 설정하여 오류를 방지합니다.
+            // ⭐ 수정: DOCX 변환 템플릿(admin/resume-detail)이 사용하는 isScrapped 변수 및 isDocxDownload 플래그를 추가합니다.
             Map<String, Object> variables = Map.of(
                     "resume", resume,
-                    "isScrapped", false // isScrapped 변수 누락으로 인한 템플릿 오류 방지
+                    "isScrapped", false,
+                    "isDocxDownload", true // DocxService에서 사용할 플래그 추가
             );
 
             // 2. 템플릿을 HTML로 렌더링 (admin/resume-detail.html 템플릿 재활용)
