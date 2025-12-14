@@ -129,11 +129,11 @@ public class ResumeController {
 
         try {
             // 1. 모델 데이터 준비 (이력서 상세 정보)
-            // ⭐ 수정: DOCX 변환 템플릿(admin/resume-detail)이 사용하는 isScrapped 변수 및 isDocxDownload 플래그를 추가합니다.
+            // DOCX 변환 시 필요한 플래그와 변수들을 안전하게 추가합니다.
             Map<String, Object> variables = Map.of(
                     "resume", resume,
                     "isScrapped", false,
-                    "isDocxDownload", true // DocxService에서 사용할 플래그 추가
+                    "isDocxDownload", true // ⭐ 추가: 템플릿의 조건부 렌더링을 위해 필요합니다.
             );
 
             // 2. 템플릿을 HTML로 렌더링 (admin/resume-detail.html 템플릿 재활용)

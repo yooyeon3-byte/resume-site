@@ -7,32 +7,36 @@
     <title layout:title-default="Yuyeon Site">Yuyeon Site</title>
     <link th:unless="${isDocxDownload}" rel="stylesheet" th:href="@{/css/style.css}"> </head>
 <body>
-<header class="navbar">
-    <div class="logo">
-        <a th:href="@{/}">Yuyeon<span>Site</span></a> </div>
-    <div class="nav-right">
-        <a th:href="@{/board}" class="nav-link">자유 게시판</a> <th:block sec:authorize="isAuthenticated()">
-        <span class="nav-link" th:text="${#authentication.name} + '님'">사용자명님</span> <a th:href="@{/resumes}" class="nav-link">내 이력서</a>
-        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/resumes}" class="nav-link active-link" style="font-weight: bold;">관리자</a>
+<th:block th:unless="${isDocxDownload}">
+    <header class="navbar">
+        <div class="logo">
+            <a th:href="@{/}">Yuyeon<span>Site</span></a> </div>
+        <div class="nav-right">
+            <a th:href="@{/board}" class="nav-link">자유 게시판</a> <th:block sec:authorize="isAuthenticated()">
+            <span class="nav-link" th:text="${#authentication.name} + '님'">사용자명님</span> <a th:href="@{/resumes}" class="nav-link">내 이력서</a>
+            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/resumes}" class="nav-link active-link" style="font-weight: bold;">관리자</a>
 
-        <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" th:href="@{/company/resumes}" class="nav-link active-link" style="font-weight: bold;">기업 대시보드</a>
+            <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" th:href="@{/company/resumes}" class="nav-link active-link" style="font-weight: bold;">기업 대시보드</a>
 
-        <form th:action="@{/logout}" method="post" style="display: inline;">
-            <button type="submit" class="btn btn-outline small">로그아웃</button>
-        </form>
-    </th:block>
-        <th:block sec:authorize="isAnonymous()">
-            <a th:href="@{/login}" class="btn btn-outline small">로그인</a>
-            <a th:href="@{/signup}" class="btn btn-primary small">회원가입</a>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-outline small">로그아웃</button>
+            </form>
         </th:block>
-    </div>
-</header>
+            <th:block sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-outline small">로그인</a>
+                <a th:href="@{/signup}" class="btn btn-primary small">회원가입</a>
+            </th:block>
+        </div>
+    </header>
+</th:block>
 
 <main class="container">
     <th:block layout:fragment="content"></th:block>
 </main>
 
-<footer class="footer">
-    © 2025 YuyeonSite. All rights reserved. </footer>
+<th:block th:unless="${isDocxDownload}">
+    <footer class="footer">
+        © 2025 YuyeonSite. All rights reserved. </footer>
+</th:block>
 </body>
 </html>
