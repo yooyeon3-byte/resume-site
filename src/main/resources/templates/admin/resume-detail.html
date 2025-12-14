@@ -35,10 +35,18 @@
         <h3>■ 인적 사항 및 지원 정보</h3>
         <div style="display: flex; gap: 40px;">
             <div style="flex-shrink: 0;">
-                <img th:if="${resume.photoPath}"
-                     th:src="@{${resume.photoPath}}"
-                     style="width: 120px; height: 160px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;"
-                     alt="증명사진">
+                <th:block th:if="${resume.photoPath}">
+                    <img th:if="${isDocxDownload}"
+                         th:src="${absolutePhotoUri}"
+                         style="width: 120px; height: 160px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;"
+                         alt="증명사진">
+
+                    <img th:unless="${isDocxDownload}"
+                         th:src="@{${resume.photoPath}}"
+                         style="width: 120px; height: 160px; object-fit: cover; border: 1px solid #ddd; border-radius: 4px;"
+                         alt="증명사진">
+                </th:block>
+
                 <div th:unless="${resume.photoPath}" style="width: 120px; height: 160px; border: 1px dashed #ccc; text-align: center; line-height: 160px; font-size: 14px; color: #888;">
                     사진 없음
                 </div>
@@ -111,7 +119,7 @@
 
             // 헬퍼 함수: JSON 키를 한글 헤더로 변환 (startDate/endDate 반영)
             const headerMap = {
-                // 학력 - ⭐ '시작일', '종료일'을 '입학일', '졸업일'로 변경
+                // 학력 - '시작일', '종료일'을 '입학일', '졸업일'로 변경
                 schoolName: '학교명', startDate: '입학일', endDate: '졸업일', major: '전공', notes: '비고',
                 // 경력
                 companyName: '회사명/직위', startDate: '시작일', endDate: '종료일', responsibility: '담당 업무',
@@ -151,11 +159,9 @@
                 const allKeys = Object.keys(headerMap);
                 const firstItemKeys = Object.keys(data[0]);
 
-                // ⭐ 수정: 렌더링할 키 순서 정의 (period 대신 startDate, endDate 포함)
+                // 렌더링할 키 순서 정의 (period 대신 startDate, endDate 포함)
                 let keysToRender;
                 if (containerId === 'educationTableContainer' || containerId === 'experienceTableContainer' || containerId === 'activityTableContainer') {
-                     // 기간을 시작일, 종료일로 분리
-
                     // 학력/경력/대외활동은 순서를 조정합니다 (예: 학교명, 시작일, 종료일, 전공, 비고)
                     keysToRender = ['schoolName', 'companyName', 'activityName', 'organization', 'major', 'notes', 'responsibility', 'details']
                         .filter(k => firstItemKeys.includes(k)) // 존재하는 필터링
@@ -168,7 +174,7 @@
                     // 시작일과 종료일은 항상 제목 다음에 위치하도록 조정
                     const titleKeyIndex = keysToRender.findIndex(k => k.includes('Name') || k.includes('organization') || k.includes('major'));
                     if (titleKeyIndex !== -1) {
-                         // 이미 존재하는 제목/전공 필드 뒤에 삽입 (존재하지 않으면 그냥 끝에 추가됨)
+                        // 이미 존재하는 제목/전공 필드 뒤에 삽입 (존재하지 않으면 그냥 끝에 추가됨)
                         keysToRender.splice(titleKeyIndex + 1, 0, 'startDate', 'endDate');
                         // 중복 제거
                         keysToRender = keysToRender.filter((key, index, self) => self.indexOf(key) === index);

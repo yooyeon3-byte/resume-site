@@ -3,7 +3,7 @@ package com.example.resumesite.controller;
 import com.example.resumesite.domain.User;
 import com.example.resumesite.dto.ResumeForm;
 import com.example.resumesite.security.CustomUserDetails;
-import com.example.resumesite.service.DocxService; // ⭐ PdfService 대신 DocxService 추가
+import com.example.resumesite.service.DocxService;
 import com.example.resumesite.service.ResumeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +30,9 @@ import java.util.Map;
 public class ResumeController {
 
     private final ResumeService resumeService;
-    private final DocxService docxService; // ⭐ DocxService 주입
-    private static final String UPLOAD_DIR = "uploads/photos"; // ⭐ 파일 저장 경로 정의 (프로젝트 루트 기준)
+    private final DocxService docxService;
+    private static final String UPLOAD_DIR = "uploads/photos";
+    private static final String UPLOADS_ROOT_DIR = "uploads"; // 사용하지 않지만 기존 변수 유지
 
     @GetMapping
     public String myResumes(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -46,9 +47,9 @@ public class ResumeController {
     public String newForm(Model model) {
         // 동적 폼을 위해 최소 1개의 빈 리스트 요소를 미리 넣어줍니다.
         ResumeForm form = new ResumeForm();
-        form.setIsPublic(false); // ⭐ 기본값 설정
+        form.setIsPublic(false);
 
-        // ⭐ 수정: 폼 렌더링 시 NullPointerException 방지를 위해 빈 리스트로 초기화
+        // 폼 렌더링 시 NullPointerException 방지를 위해 빈 리스트로 초기화
         form.setEducationList(List.of());
         form.setExperienceList(List.of());
         form.setCertificationList(List.of());
@@ -63,13 +64,14 @@ public class ResumeController {
     public String create(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @Valid @ModelAttribute ResumeForm form,
                          BindingResult bindingResult,
-                         @RequestParam("photoFile") MultipartFile photoFile) throws IOException { // ⭐ 파일 처리
+                         // ⭐ required = false 유지 (이전 수정)
+                         @RequestParam(value = "photoFile", required = false) MultipartFile photoFile) throws IOException {
         if (bindingResult.hasErrors()) {
             return "resume/form";
         }
 
-        String photoPath = handleFileUpload(photoFile, null); // 신규 생성 시 기존 경로는 null
-        form.setExistingPhotoPath(photoPath); // DTO에 최종 경로 설정 (서비스에서 사용)
+        String photoPath = handleFileUpload(photoFile, null);
+        form.setExistingPhotoPath(photoPath);
 
         // 실제로 DTO를 JSON으로 직렬화하고 엔티티를 저장하는 로직은 ResumeService에 있다고 가정
         resumeService.create(userDetails.getUser(), form);
@@ -101,21 +103,22 @@ public class ResumeController {
                          @PathVariable Long id,
                          @Valid @ModelAttribute ResumeForm form,
                          BindingResult bindingResult,
-                         @RequestParam("photoFile") MultipartFile photoFile) throws IOException { // ⭐ 파일 처리
+                         // ⭐ required = false 유지 (이전 수정)
+                         @RequestParam(value = "photoFile", required = false) MultipartFile photoFile) throws IOException {
         if (bindingResult.hasErrors()) {
             return "resume/form";
         }
 
         // 기존 경로를 DTO에서 가져와 파일 업로드 처리
         String photoPath = handleFileUpload(photoFile, form.getExistingPhotoPath());
-        form.setExistingPhotoPath(photoPath); // DTO에 최종 경로 설정
+        form.setExistingPhotoPath(photoPath);
 
         form.setId(id);
         resumeService.update(userDetails.getUser(), form);
         return "redirect:/resumes";
     }
 
-    // ⭐ 추가: 이력서 DOCX 다운로드 엔드포인트 (PDF 대체)
+    // ⭐ 이력서 DOCX 다운로드 엔드포인트
     @GetMapping("/{id}/download-docx")
     public ResponseEntity<byte[]> downloadDocx(@PathVariable Long id,
                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -129,24 +132,45 @@ public class ResumeController {
 
         try {
             // 1. 모델 데이터 준비 (이력서 상세 정보)
+
+            // 프로젝트 루트 경로를 가져옵니다.
+            String rootPath = System.getProperty("user.dir");
+
+            // ⭐ DOCX 변환 시 사용할 사진의 절대 경로 URI를 계산합니다.
+            String absolutePhotoUri = "";
+            if (resume.getPhotoPath() != null && !resume.getPhotoPath().isEmpty()) {
+                // `resume.getPhotoPath()`: `/uploads/photos/...` 형태
+
+                // 1. 선행 `/` 제거 (Paths.get에서 절대 경로로 오인되는 것을 방지)
+                String pathWithoutLeadingSlash = resume.getPhotoPath().startsWith("/")
+                        ? resume.getPhotoPath().substring(1)
+                        : resume.getPhotoPath();
+
+                // 2. 프로젝트 루트 경로와 결합하여 절대 파일 시스템 경로 생성
+                Path fullPath = Paths.get(rootPath, pathWithoutLeadingSlash);
+
+                // 3. file:/// 형식의 절대 경로 URI 생성 (이것이 DOCX 생성기에서 이미지를 로드할 수 있는 방식입니다.)
+                absolutePhotoUri = fullPath.toUri().toString();
+            }
+
             // DOCX 변환 시 필요한 플래그와 변수들을 안전하게 추가합니다.
             Map<String, Object> variables = Map.of(
                     "resume", resume,
                     "isScrapped", false,
-                    "isDocxDownload", true // ⭐ 추가: 템플릿의 조건부 렌더링을 위해 필요합니다.
+                    "isDocxDownload", true, // 템플릿의 조건부 렌더링을 위해 필요
+                    "absolutePhotoUri", absolutePhotoUri // ⭐ 계산된 절대 경로 URI 전달
             );
 
             // 2. 템플릿을 HTML로 렌더링 (admin/resume-detail.html 템플릿 재활용)
             String htmlContent = docxService.renderHtml("admin/resume-detail", variables);
 
             // 3. HTML을 DOCX로 변환
-            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent); // ⭐ DOCX 서비스 호출
+            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent);
 
             // 4. HTTP 응답 헤더 설정
             HttpHeaders headers = new HttpHeaders();
-            String filename = resume.getName() + "_이력서.docx"; // ⭐ 확장자 변경
+            String filename = resume.getName() + "_이력서.docx";
             headers.setContentDispositionFormData("attachment", filename);
-            // DOCX를 위한 미디어 타입 (application/octet-stream은 모든 바이너리 파일에 사용 가능)
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
             // 5. DOCX 파일 반환
@@ -156,7 +180,7 @@ public class ResumeController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            // DOCX 생성 실패 시 오류 메시지 반환
+            // DOCX 생성 실패 시 오류 메시지 반환 (디버깅을 위해 메시지를 포함)
             return ResponseEntity.status(500).body(("DOCX 생성 중 오류가 발생했습니다: " + e.getMessage()).getBytes());
         }
     }
@@ -175,7 +199,7 @@ public class ResumeController {
             Path filePath = uploadDir.resolve(fileName);
             Files.copy(file.getInputStream(), filePath);
 
-            return "/" + UPLOAD_DIR + "/" + fileName; // 웹 접근 가능한 상대 경로 반환
+            return "/" + UPLOAD_DIR + "/" + fileName; // 웹 접근 가능한 상대 경로 반환 (예: /uploads/photos/...)
         }
         return existingPath; // 새 파일이 없으면 기존 경로 반환
     }
