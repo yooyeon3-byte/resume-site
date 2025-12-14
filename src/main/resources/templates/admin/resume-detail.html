@@ -12,6 +12,13 @@
         <a th:href="@{/company/resumes}" th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="btn-outline small">목록으로</a>
         <a th:href="@{/admin/resumes}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="btn-outline small">목록으로</a>
 
+        <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
+              onsubmit="return confirm('관리자 권한으로 이 이력서를 영구 삭제하시겠습니까?');"
+              sec:authorize="hasRole('ADMIN')"
+              style="display: inline-block; margin-left: 10px;">
+            <button type="submit" class="btn-danger small">🗑️ 이력서 삭제 (관리자)</button>
+        </form>
+
         <div sec:authorize="hasRole('COMPANY')">
             <form th:action="@{'/company/resumes/' + ${resume.id} + '/toggle-scrap'}" method="post">
                 <button type="submit"

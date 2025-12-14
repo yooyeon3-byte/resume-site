@@ -21,12 +21,13 @@
         <pre class="content-text" th:text="${post.content}" style="min-height: 300px; padding: 15px 0;"></pre>
 
         <div class="card-actions" sec:authorize="isAuthenticated()">
-            <th:block th:if="${#authentication.principal.user.id == post.author.id}">
-                <a th:href="@{'/board/' + ${post.id} + '/edit'}" class="btn-outline small">수정</a>
-                <form th:action="@{'/board/' + ${post.id} + '/delete'}" method="post"
-                      onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
-                    <button type="submit" class="btn-danger small">삭제</button>
-                </form>
+            <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')') or #authentication.principal.user.id == post.author.id}">
+                <a th:href="@{'/board/' + ${post.id} + '/edit'}" class="btn-outline small"
+                   th:if="${#authentication.principal.user.id == post.author.id}">수정</a> <form th:action="@{'/board/' + ${post.id} + '/delete'}" method="post"
+                                                                                               onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');"
+                                                                                               style="display: inline;">
+                <button type="submit" class="btn-danger small">삭제</button>
+            </form>
             </th:block>
         </div>
     </div>

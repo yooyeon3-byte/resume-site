@@ -97,7 +97,7 @@ public class BoardService {
         Board board = findById(boardId);
 
         // 작성자 검증
-        if (!board.getAuthor().getId().equals(currentUser.getId())) {
+        if (!board.getAuthor().getId().equals(currentUser.getId()) && currentUser.getRole() != User.Role.ADMIN) {
             throw new IllegalStateException("게시글을 삭제할 권한이 없습니다.");
         }
 

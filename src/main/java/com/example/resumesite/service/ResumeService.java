@@ -124,14 +124,20 @@ public class ResumeService {
         return resume;
     }
 
+    // src/main/java/com/example/resumesite/service/ResumeService.java
+
+    // ... (생략)
     public void delete(User owner, Long id) {
         Resume resume = resumeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("이력서를 찾을 수 없습니다."));
-        if (!resume.getOwner().getId().equals(owner.getId())) {
+
+        // ⭐ 수정: 소유자 검증 또는 ADMIN 권한 확인
+        if (!resume.getOwner().getId().equals(owner.getId()) && owner.getRole() != User.Role.ADMIN) {
             throw new IllegalStateException("본인 이력서만 삭제할 수 있습니다.");
         }
         resumeRepository.delete(resume);
     }
+// ... (생략)
 
     @Transactional(readOnly = true)
     public List<Resume> findMyResumes(User owner) {
