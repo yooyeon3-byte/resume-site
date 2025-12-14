@@ -137,35 +137,28 @@ public class ResumeController {
             Path rootPath = Paths.get(System.getProperty("user.dir"));
             String baseUri = rootPath.toUri().toASCIIString(); // 프로젝트 루트 경로 URI
 
+            // ⭐ 수정: 이미지 로딩 관련 오류를 회피/확인하기 위해 절대 경로를 강제로 비웁니다.
             String absolutePhotoUri = "";
+            /*
             if (resume.getPhotoPath() != null && !resume.getPhotoPath().isEmpty()) {
-                // `resume.getPhotoPath()`: `/uploads/photos/...` 형태
-                String webPath = resume.getPhotoPath().startsWith("/")
-                        ? resume.getPhotoPath().substring(1)
-                        : resume.getPhotoPath();
-
-                // 2. 프로젝트 루트 경로와 결합하여 절대 파일 시스템 경로를 얻습니다.
-                // 이 경로는 템플릿의 img src 속성에 그대로 사용됨.
-                Path fullPath = Paths.get(System.getProperty("user.dir"), webPath);
-
-                // 3. URI 생성 후 템플릿에 전달.
-                absolutePhotoUri = fullPath.toUri().toASCIIString();
+                // ... (기존의 복잡한 절대 경로 계산 로직 주석 처리)
             }
+            */
 
             // DOCX 변환 시 필요한 플래그와 변수들을 안전하게 추가합니다.
             Map<String, Object> variables = Map.of(
                     "resume", resume,
                     "isScrapped", false,
                     "isDocxDownload", true, // 템플릿의 조건부 렌더링을 위해 필요
-                    "absolutePhotoUri", absolutePhotoUri // ⭐ 계산된 절대 경로 URI 전달
+                    "absolutePhotoUri", absolutePhotoUri // ⭐ 강제로 비웠으므로, 이미지 태그는 렌더링되지 않습니다.
             );
 
             // 2. 템플릿을 HTML로 렌더링 (admin/resume-detail.html 템플릿 재활용)
             String htmlContent = docxService.renderHtml("admin/resume-detail", variables);
 
             // 3. HTML을 DOCX로 변환
-            // ⭐ 수정: baseUri를 DocxService에 전달
-            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent, baseUri);
+            // ⭐ Base URI가 포함된 수정된 DocxService 메서드 호출 (이전 단계에서 이미 적용됨)
+            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent, baseUri);z
 
             // 4. HTTP 응답 헤더 설정
             HttpHeaders headers = new HttpHeaders();
