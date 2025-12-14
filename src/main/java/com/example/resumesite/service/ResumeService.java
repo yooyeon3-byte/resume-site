@@ -138,14 +138,35 @@ public class ResumeService {
         return resumeRepository.findByOwner(owner);
     }
 
+    // 관리자 전용: 모든 이력서를 가져옵니다.
     @Transactional(readOnly = true)
     public List<Resume> findAll() {
         return resumeRepository.findAll();
+    }
+
+    // ⭐ 추가: 기업 유저 전용 - 공개된 이력서(isPublic=true)만 가져옵니다.
+    @Transactional(readOnly = true)
+    public List<Resume> findAllPublicResumes() {
+        return resumeRepository.findByIsPublic(true);
     }
 
     @Transactional(readOnly = true)
     public Resume findById(Long id) {
         return resumeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("이력서를 찾을 수 없습니다."));
+    }
+
+    // ⭐ 추가: 이력서 공개 여부를 토글하고 변경사항을 저장하는 메소드
+    public void togglePublicStatus(Long resumeId, User owner) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(() -> new IllegalArgumentException("이력서를 찾을 수 없습니다."));
+
+        // 소유자 검증
+        if (!resume.getOwner().getId().equals(owner.getId())) {
+            throw new IllegalStateException("본인 이력서만 공개/비공개 전환할 수 있습니다.");
+        }
+
+        resume.setIsPublic(!resume.getIsPublic()); // 상태 반전
+        // @Transactional에 의해 트랜잭션 종료 시점에 변경 사항이 자동 저장됩니다.
     }
 }

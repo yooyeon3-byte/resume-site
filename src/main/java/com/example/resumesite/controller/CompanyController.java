@@ -24,8 +24,8 @@ public class CompanyController {
     // 전체 이력서 목록 조회 (기업 열람용)
     @GetMapping("/resumes")
     public String allResumes(Model model) {
-        // 모든 이력서를 조회하여 기업용 목록 템플릿으로 전달 (실제로는 isPublic=true인 것만 조회해야 함)
-        model.addAttribute("resumes", resumeService.findAll());
+        // ⭐ 수정: 공개된 이력서만 조회하도록 변경 (isPublic=true)
+        model.addAttribute("resumes", resumeService.findAllPublicResumes());
         return "company/resume-list";
     }
 
