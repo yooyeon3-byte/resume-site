@@ -22,7 +22,11 @@ public class Board {
     @Lob @Column(nullable = false)
     private String content; // 게시글 내용
 
+    // ...
+// @Builder.Default 를 추가하여 @Builder 사용 시 초기값(0)이 적용되도록 합니다.
+    @Builder.Default
     private int viewCount = 0; // 조회수
+// ...
 
     // ⭐ 추가: 게시글 분류 (자유, 질문, 정보공유)
     @Column(length = 20)

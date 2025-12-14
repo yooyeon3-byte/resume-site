@@ -41,6 +41,7 @@ public class Resume {
     @Column(nullable = false) private Boolean veteranBenefit; // 보훈대상
 
     // ⭐ 추가: 이력서 공개 여부 (기본값 false)
+    @Builder.Default
     @Column(nullable = false) private Boolean isPublic = false;
 
     // ⭐ 구조화된 리스트 데이터 (JSON 문자열로 저장)

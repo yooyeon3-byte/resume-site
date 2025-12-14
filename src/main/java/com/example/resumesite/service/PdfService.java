@@ -1,11 +1,14 @@
 package com.example.resumesite.service;
 
+// 오류 해결을 위해 openhtmltopdf 관련 import를 모두 주석 처리합니다.
+/*
 import com.openhtmltopdf.pdfbox.PdfBoxRenderer;
 import com.openhtmltopdf.pdfbox.PdfBoxRenderer.PdfBoxRendererBuilder;
 import com.openhtmltopdf.extend.FailsafeResourceResolver;
 import com.openhtmltopdf.extend.FSResource;
 import com.openhtmltopdf.extend.ResourceResolver;
 import com.openhtmltopdf.read.ReadContext;
+*/
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -33,27 +36,15 @@ public class PdfService {
     }
 
     /**
-     * HTML 문자열을 PDF 바이트 배열로 변환합니다.
+     * HTML 문자열을 PDF 바이트 배열로 변환합니다. (기능 임시 비활성화)
      */
     public byte[] convertHtmlToPdf(String htmlContent) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-        PdfBoxRendererBuilder builder = PdfBoxRenderer.builder()
-                .withWkhtmltopdf(false)
-                .defaultResourceResolver(new FailsafeResourceResolver())
-                // 폰트 리소스 로더 추가 (한글 깨짐 방지)
-                .defaultResourceResolver(new FontResourceResolver());
-
-        PdfBoxRenderer renderer = builder.build();
-
-        renderer.setHtmlContent(htmlContent, "/");
-        renderer.layout();
-        renderer.create(os);
-
-        return os.toByteArray();
+        // PDF 라이브러리 오류로 인해 이 기능을 임시 비활성화합니다.
+        throw new UnsupportedOperationException("PDF 다운로드 기능은 현재 라이브러리 문제로 인해 임시 비활성화되었습니다.");
     }
 
-    // 헬퍼 클래스: OpenHTMLToPDF가 한글 폰트를 로드할 수 있도록 합니다.
+    // FontResourceResolver 클래스도 오류가 나므로 주석 처리합니다.
+    /*
     private static class FontResourceResolver implements ResourceResolver {
         @Override
         public FSResource resolve(String uri) {
@@ -75,4 +66,5 @@ public class PdfService {
             return resolve(uri);
         }
     }
+    */
 }
