@@ -3,13 +3,13 @@ package com.example.resumesite.controller;
 import com.example.resumesite.domain.User;
 import com.example.resumesite.dto.ResumeForm;
 import com.example.resumesite.security.CustomUserDetails;
-import com.example.resumesite.service.PdfService; // ⭐ 추가
+import com.example.resumesite.service.DocxService; // ⭐ PdfService 대신 DocxService 추가
 import com.example.resumesite.service.ResumeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders; // ⭐ 추가
-import org.springframework.http.MediaType; // ⭐ 추가
-import org.springframework.http.ResponseEntity; // ⭐ 추가
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.List;
-import java.util.Map; // ⭐ 추가
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ import java.util.Map; // ⭐ 추가
 public class ResumeController {
 
     private final ResumeService resumeService;
-    private final PdfService pdfService; // ⭐ 추가: PdfService 주입
+    private final DocxService docxService; // ⭐ DocxService 주입
     private static final String UPLOAD_DIR = "uploads/photos"; // ⭐ 파일 저장 경로 정의 (프로젝트 루트 기준)
 
     @GetMapping
@@ -115,10 +115,10 @@ public class ResumeController {
         return "redirect:/resumes";
     }
 
-    // ⭐ 추가: 이력서 PDF 다운로드 엔드포인트
-    @GetMapping("/{id}/download-pdf")
-    public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id,
-                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+    // ⭐ 추가: 이력서 DOCX 다운로드 엔드포인트 (PDF 대체)
+    @GetMapping("/{id}/download-docx")
+    public ResponseEntity<byte[]> downloadDocx(@PathVariable Long id,
+                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         var resume = resumeService.findById(id);
 
@@ -132,28 +132,29 @@ public class ResumeController {
             Map<String, Object> variables = Map.of("resume", resume);
 
             // 2. 템플릿을 HTML로 렌더링 (admin/resume-detail.html 템플릿 재활용)
-            String htmlContent = pdfService.renderHtml("admin/resume-detail", variables);
+            String htmlContent = docxService.renderHtml("admin/resume-detail", variables);
 
-            // 3. HTML을 PDF로 변환
-            byte[] pdfBytes = pdfService.convertHtmlToPdf(htmlContent);
+            // 3. HTML을 DOCX로 변환
+            byte[] docxBytes = docxService.convertHtmlToDocx(htmlContent); // ⭐ DOCX 서비스 호출
 
             // 4. HTTP 응답 헤더 설정
             HttpHeaders headers = new HttpHeaders();
-            String filename = resume.getName() + "_이력서.pdf";
+            String filename = resume.getName() + "_이력서.docx"; // ⭐ 확장자 변경
             headers.setContentDispositionFormData("attachment", filename);
-            headers.setContentType(MediaType.APPLICATION_PDF);
+            // DOCX를 위한 미디어 타입 (application/octet-stream은 모든 바이너리 파일에 사용 가능)
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
-            // 5. PDF 파일 반환
+            // 5. DOCX 파일 반환
             return ResponseEntity.ok()
                     .headers(headers)
-                    .body(pdfBytes);
+                    .body(docxBytes);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(("PDF 생성 중 오류가 발생했습니다: " + e.getMessage()).getBytes());
+            // DOCX 생성 실패 시 오류 메시지 반환
+            return ResponseEntity.status(500).body(("DOCX 생성 중 오류가 발생했습니다: " + e.getMessage()).getBytes());
         }
     }
-
 
     // ⭐ 파일 업로드 유틸리티: 새 파일이 있으면 저장하고, 없으면 기존 경로를 유지합니다.
     private String handleFileUpload(MultipartFile file, String existingPath) throws IOException {

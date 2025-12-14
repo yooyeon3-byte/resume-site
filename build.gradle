@@ -15,6 +15,8 @@ java {
 
 repositories {
     mavenCentral()
+    // ⭐ Docx4j 라이브러리 (docx4j-samples 포함)를 찾기 위해 저장소 추가
+    maven { url "https://repo.maven.apache.org/maven2" }
 }
 
 dependencies {
@@ -37,11 +39,16 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
-    // PDF 변환 라이브러리 (오류 해결을 위한 핵심 추가)
-    // import com.openhtmltopdf.pdfbox.PdfBoxRenderer; 사용을 위해 필요합니다.
+    // PDF 변환 라이브러리 (오류 발생으로 DOCX로 대체)
+    /*
     implementation 'com.openhtmltopdf:openhtmltopdf-core:1.0.10'
     implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
     implementation 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.10'
+    */
+
+    // ⭐ DOCX (Word 파일) 생성을 위한 Docx4j 의존성 추가
+    implementation 'org.docx4j:docx4j-core:8.3.11'
+    implementation 'org.docx4j:docx4j-samples:8.3.11' // HTML 변환 기능을 위해 필요
 
     // Test Dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
