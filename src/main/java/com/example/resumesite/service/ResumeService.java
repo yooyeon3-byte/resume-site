@@ -141,14 +141,16 @@ public class ResumeService {
     // 관리자 전용: 모든 이력서를 가져옵니다.
     @Transactional(readOnly = true)
     public List<Resume> findAll() {
+        // 이 로직은 원래의 코드를 유지합니다.
         return resumeRepository.findAll();
     }
 
-    // ⭐ 추가: 기업 유저 전용 - 공개된 이력서(isPublic=true)만 가져옵니다.
+    // 기업 유저 전용 - 공개된 이력서(isPublic=true)만 가져옵니다.
     @Transactional(readOnly = true)
     public List<Resume> findAllPublicResumes() {
         return resumeRepository.findByIsPublic(true);
     }
+
 
     @Transactional(readOnly = true)
     public Resume findById(Long id) {

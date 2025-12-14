@@ -132,12 +132,10 @@ public class ResumeController {
     @PostMapping("/{id}/toggle-public")
     public String togglePublic(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-            // ⭐ Service의 쓰기 가능한 트랜잭션 메서드를 호출
             resumeService.togglePublicStatus(id, userDetails.getUser());
         } catch (IllegalStateException e) {
             return "redirect:/resumes?error=unauthorized";
         } catch (Exception e) {
-            // 실패 처리 (예: 이력서 ID를 찾을 수 없는 경우)
             return "redirect:/resumes?error=toggleFailed";
         }
         return "redirect:/resumes";
