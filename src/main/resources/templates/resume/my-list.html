@@ -19,12 +19,15 @@
                  th:styleappend="${resume.isPublic} ? 'color: var(--color-cta-green);' : 'color: var(--color-danger);'">
                 <span th:text="${resume.isPublic} ? '✅ 공개 중' : '🔒 비공개'"></span>
             </div>
-            <div class="card-actions">
+
+            <div style="margin-top: 20px; margin-bottom: 10px;">
                 <form th:action="@{'/resumes/' + ${resume.id} + '/toggle-public'}" method="post">
-                    <button th:classappend="${resume.isPublic} ? 'btn-danger small btn-toggle-width' : 'btn-outline small btn-toggle-width'" type="submit"
+                    <button th:classappend="${resume.isPublic} ? 'btn-danger small full' : 'btn-outline small full'" type="submit"
                             th:text="${resume.isPublic} ? '비공개 전환' : '공개 전환'"></button>
                 </form>
+            </div>
 
+            <div class="card-actions">
                 <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline small btn-action-width">수정</a>
                 <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
                       onsubmit="return confirm('삭제할까요?');">

@@ -41,6 +41,13 @@ public class ResumeController {
         // 동적 폼을 위해 최소 1개의 빈 리스트 요소를 미리 넣어줍니다.
         ResumeForm form = new ResumeForm();
         form.setIsPublic(false); // ⭐ 기본값 설정
+
+        // ⭐ 수정: 폼 렌더링 시 NullPointerException 방지를 위해 빈 리스트로 초기화
+        form.setEducationList(List.of());
+        form.setExperienceList(List.of());
+        form.setCertificationList(List.of());
+        form.setActivityList(List.of());
+
         model.addAttribute("resumeForm", form);
         return "resume/form";
     }
