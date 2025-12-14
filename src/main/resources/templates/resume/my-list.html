@@ -20,7 +20,7 @@
                 <span th:text="${resume.isPublic} ? '✅ 공개 중' : '🔒 비공개'"></span>
             </div>
             <div class="card-actions">
-                <form th:action="@{'/resumes/' + ${resume.id} + '/toggle-public'}" method="post" style="margin-right: auto;">
+                <form th:action="@{'/resumes/' + ${resume.id} + '/toggle-public'}" method="post">
                     <button th:classappend="${resume.isPublic} ? 'btn-danger small btn-toggle-width' : 'btn-outline small btn-toggle-width'" type="submit"
                             th:text="${resume.isPublic} ? '비공개 전환' : '공개 전환'"></button>
                 </form>
