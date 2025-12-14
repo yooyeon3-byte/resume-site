@@ -3,7 +3,7 @@ package com.example.resumesite.controller;
 import com.example.resumesite.domain.User;
 import com.example.resumesite.dto.ResumeForm;
 import com.example.resumesite.security.CustomUserDetails;
-import com.example.resumesite.service.ResumeService; // ResumeService import
+import com.example.resumesite.service.ResumeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

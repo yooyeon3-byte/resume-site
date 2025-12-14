@@ -60,6 +60,9 @@ public class ResumeService {
                 .militaryEndDate(form.getMilitaryEndDate())     // ⭐ 추가
                 .veteranBenefit(form.getVeteranBenefit())
 
+                // ⭐ 추가: 공개 여부
+                .isPublic(form.getIsPublic() != null ? form.getIsPublic() : false)
+
                 // 구조화된 리스트 (JSON 직렬화)
                 .educationHistory(toJson(form.getEducationList()))
                 .experienceHistory(toJson(form.getExperienceList()))
@@ -104,6 +107,10 @@ public class ResumeService {
         resume.setMilitaryStartDate(form.getMilitaryStartDate()); // ⭐ 수정
         resume.setMilitaryEndDate(form.getMilitaryEndDate());     // ⭐ 추가
         resume.setVeteranBenefit(form.getVeteranBenefit());
+
+        // ⭐ 추가: 공개 여부
+        resume.setIsPublic(form.getIsPublic() != null ? form.getIsPublic() : false);
+
 
         // 구조화된 리스트 (JSON 직렬화)
         resume.setEducationHistory(toJson(form.getEducationList()));
