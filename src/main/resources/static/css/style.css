@@ -187,9 +187,15 @@ a:hover {
     box-shadow: none;
 }
 
-/* ⭐ 추가: 전환 버튼을 위한 고정 너비 클래스 */
+/* ⭐ 전환 버튼을 위한 고정 너비 클래스 */
 .btn-toggle-width {
-    width: 100px; /* 고정 너비 적용 */
+    width: 130px; /* 고정 너비 적용 */
+    text-align: center;
+}
+
+/* ⭐ 수정: 수정/삭제 버튼을 위한 고정 너비 클래스를 90px로 확대 */
+.btn-action-width {
+    width: 90px; /* 고정 너비 적용 (80px -> 90px로 확대) */
     text-align: center;
 }
 
@@ -353,8 +359,8 @@ textarea {
     background-color: #e9ecef; /* 헤더 배경색 */
     color: var(--color-text);
     font-weight: 700;
-    border-bottom: 2px solid var(--color-border);
     text-align: center; /* 헤더 중앙 정렬 */
+    border-bottom: 2px solid var(--color-border);
 }
 .table tbody tr:hover {
     background-color: #f0f4f8; /* 호버 효과 강조 */
