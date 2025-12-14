@@ -3,9 +3,9 @@ package com.example.resumesite.service;
 import com.openhtmltopdf.pdfbox.PdfBoxRenderer;
 import com.openhtmltopdf.pdfbox.PdfBoxRenderer.PdfBoxRendererBuilder;
 import com.openhtmltopdf.extend.FailsafeResourceResolver;
-import com.openhtmltopdf.extend.FSResource; // ⭐ 추가
-import com.openhtmltopdf.extend.ResourceResolver; // ⭐ 추가
-import com.openhtmltopdf.read.ReadContext; // ⭐ 추가
+import com.openhtmltopdf.extend.FSResource;
+import com.openhtmltopdf.extend.ResourceResolver;
+import com.openhtmltopdf.read.ReadContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -25,22 +25,15 @@ public class PdfService {
 
     /**
      * Thymeleaf 템플릿을 HTML 문자열로 렌더링합니다.
-     * @param templateName 템플릿 경로 (예: "admin/resume-detail")
-     * @param variables 템플릿에 전달할 모델 데이터
-     * @return 렌더링된 HTML 문자열
      */
     public String renderHtml(String templateName, Map<String, Object> variables) {
         Context context = new Context(Locale.KOREA, variables);
-        // ⭐ PDF 변환 시 Thymeleaf 레이아웃(fragments/layout)을 제외하기 위해 템플릿 이름만 사용합니다.
-        //    (admin/resume-detail.html 템플릿의 내용만 추출하여 PDF로 변환)
+        // fragments/layout을 제외하고 템플릿 내용만 추출하여 PDF로 변환합니다.
         return templateEngine.process(templateName, context);
     }
 
     /**
      * HTML 문자열을 PDF 바이트 배열로 변환합니다.
-     * @param htmlContent 렌더링된 HTML 문자열
-     * @return PDF 파일의 바이트 배열
-     * @throws IOException
      */
     public byte[] convertHtmlToPdf(String htmlContent) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -48,7 +41,7 @@ public class PdfService {
         PdfBoxRendererBuilder builder = PdfBoxRenderer.builder()
                 .withWkhtmltopdf(false)
                 .defaultResourceResolver(new FailsafeResourceResolver())
-                // ⭐ 폰트 리소스 로더 추가 (한글 깨짐 방지)
+                // 폰트 리소스 로더 추가 (한글 깨짐 방지)
                 .defaultResourceResolver(new FontResourceResolver());
 
         PdfBoxRenderer renderer = builder.build();
@@ -60,8 +53,7 @@ public class PdfService {
         return os.toByteArray();
     }
 
-    // ⭐ 헬퍼 클래스: OpenHTMLToPDF가 한글 폰트를 로드할 수 있도록 합니다.
-    //    주의: 실제 운영 환경에서는 /src/main/resources/static/fonts/NanumGothic.ttf 파일이 필요합니다.
+    // 헬퍼 클래스: OpenHTMLToPDF가 한글 폰트를 로드할 수 있도록 합니다.
     private static class FontResourceResolver implements ResourceResolver {
         @Override
         public FSResource resolve(String uri) {
@@ -73,7 +65,7 @@ public class PdfService {
                     return new FSResource(is);
                 }
             } catch (Exception e) {
-                // 폰트 로드 실패 시 무시하고 진행
+                // 폰트 로드 실패 시 무시
             }
             return null;
         }

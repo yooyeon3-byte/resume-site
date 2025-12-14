@@ -30,8 +30,8 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     //runtimeOnly 'com.h2database:h2'
 
-    testImplementation
-    'org.springframework.boot:spring-boot-starter-test'
+    // ⭐ 수정된 부분: testImplementation 구문 오류 해결 및 PDF 의존성 추가
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
@@ -41,7 +41,7 @@ dependencies {
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    // ⭐ PDF 변환 라이브러리 추가 (OpenHTMLToPDF)
+    // PDF 변환 라이브러리
     implementation 'com.openhtmltopdf:openhtmltopdf-core:1.0.10'
     implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
     implementation 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.10'
