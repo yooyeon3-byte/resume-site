@@ -18,7 +18,7 @@
             조회수: <span th:text="${post.viewCount}"></span>
         </p>
 
-        <pre class="content-text" th:text="${post.content}" style="min-height: 200px; padding: 15px 0;"></pre>
+        <pre class="content-text" th:text="${post.content}" style="min-height: 300px; padding: 15px 0;"></pre>
 
         <div class="card-actions" sec:authorize="isAuthenticated()">
             <th:block th:if="${#authentication.principal.user.id == post.author.id}">

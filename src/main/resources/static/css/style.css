@@ -3,20 +3,20 @@
 /* ========================================================= */
 
 :root {
-    /* Professional & Clean Palette (Deep Navy + Cyan Accent) */
-    --color-primary: #1e3a8a;       /* Deep Navy / Main Accent Color */
-    --color-primary-light: #3b82f6; /* Soft Accent Blue / Link Hover */
-    --color-cta-green: #10b981;     /* Vibrant Green for main buttons */
-    --color-background: #ffffff;
-    --color-page-bg: #f8f9fa;       /* Very Light Gray Background (더 부드러운 배경) */
-    --color-text: #1f2937;
-    --color-text-subtle: #6c757d;   /* Subtler text for captions */
-    --color-border: #e9ecef;        /* Lighter borders */
-    --color-danger: #dc3545;
+/* Professional & Clean Palette (Deep Navy + Cyan Accent) */
+--color-primary: #1e3a8a;       /* Deep Navy / Main Accent Color */
+--color-primary-light: #3b82f6; /* Soft Accent Blue / Link Hover */
+--color-cta-green: #10b981;     /* Vibrant Green for main buttons */
+--color-background: #ffffff;
+--color-page-bg: #f8f9fa;       /* Very Light Gray Background (더 부드러운 배경) */
+--color-text: #1f2937;
+--color-text-subtle: #6c757d;   /* Subtler text for captions */
+--color-border: #e9ecef;        /* Lighter borders */
+--color-danger: #dc3545;
 
-    /* Shadow adjustments for a lighter, floating effect */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 12px rgba(30, 58, 138, 0.1); /* 더 부드러운 그림자 */
+/* Shadow adjustments for a lighter, floating effect */
+--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+--shadow-md: 0 4px 12px rgba(30, 58, 138, 0.1); /* 더 부드러운 그림자 */
 }
 
 * {
@@ -294,6 +294,11 @@ textarea {
 }
 
 /* ⭐ 상세 페이지 디자인 (유지 및 개선) */
+.detail-section {
+    max-width: 900px; /* ⭐ 추가: 상세 페이지 카드 최대 너비 확장 */
+    margin-left: auto;
+    margin-right: auto;
+}
 .detail-section h3 {
     font-size: 20px;
     font-weight: 700;
@@ -439,6 +444,9 @@ textarea {
     margin-top: 30px;
     padding: 25px 0;
     border-top: 2px solid var(--color-border);
+    max-width: 900px; /* ⭐ 추가: 댓글 섹션 최대 너비 확장 */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .comment-list {
