@@ -182,21 +182,21 @@ a:hover {
 }
 
 .small {
-    /* ⭐ 수정: 좌우 패딩을 줄여 공간 확보 */
-    padding: 8px 8px; /* 16px에서 10px로 축소 */
+    /* ⭐ 수정: 좌우 패딩을 줄여 공간 확보 (16px -> 8px) */
+    padding: 8px 8px;
     font-size: 13px;
     box-shadow: none;
 }
 
 /* ⭐ 전환 버튼을 위한 고정 너비 클래스 */
 .btn-toggle-width {
-    width: 120px; /* 고정 너비 유지 */
+    width: 130px; /* 고정 너비 적용 */
     text-align: center;
 }
 
 /* ⭐ 수정: 수정/삭제 버튼을 위한 고정 너비 클래스를 100px로 확대 */
 .btn-action-width {
-    width: 100px; /* 고정 너비 적용 (90px -> 100px로 확대) */
+    width: 100px; /* 고정 너비 적용 */
     text-align: center;
 }
 
