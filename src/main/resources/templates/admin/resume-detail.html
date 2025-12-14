@@ -9,20 +9,16 @@
     <div class="page-header">
         <h2 th:text="${resume.title}">이력서 제목</h2>
 
-        <th:block th:unless="${isDocxDownload}">
-            <a th:href="@{/company/resumes}" th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="btn-outline small">목록으로</a>
-            <a th:href="@{/admin/resumes}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="btn-outline small">목록으로</a>
-        </th:block>
+        <a th:href="@{/company/resumes}" th:if="${#authorization.expression('hasRole(''COMPANY'')')}" class="btn-outline small">목록으로</a>
+        <a th:href="@{/admin/resumes}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="btn-outline small">목록으로</a>
 
-        <th:block th:unless="${isDocxDownload}">
-            <div sec:authorize="hasRole('COMPANY')">
-                <form th:action="@{'/company/resumes/' + ${resume.id} + '/toggle-scrap'}" method="post">
-                    <button type="submit"
-                            th:classappend="${isScrapped} ? 'btn-danger small' : 'btn-outline small'"
-                            th:text="${isScrapped} ? '⭐ 스크랩 취소' : '⭐ 관심 이력서 등록'"></button>
-                </form>
-            </div>
-        </th:block>
+        <div sec:authorize="hasRole('COMPANY')">
+            <form th:action="@{'/company/resumes/' + ${resume.id} + '/toggle-scrap'}" method="post">
+                <button type="submit"
+                        th:classappend="${isScrapped} ? 'btn-danger small' : 'btn-outline small'"
+                        th:text="${isScrapped} ? '⭐ 스크랩 취소' : '⭐ 관심 이력서 등록'"></button>
+            </form>
+        </div>
     </div>
 
     <p class="muted" style="margin-top: -20px; margin-bottom: 25px;">
@@ -33,41 +29,7 @@
 
     <div class="card detail-section">
         <h3>■ 인적 사항 및 지원 정보</h3>
-
-        <th:block th:if="${isDocxDownload}">
-            <table class="table" style="width: 100%; margin-top: 0; border: none; box-shadow: none;">
-                <tr>
-                    <td style="width: 140px; border-bottom: none; padding: 0 20px 0 0; vertical-align: top;">
-                        <div style="width: 120px; height: 160px; border: 1px solid #ddd; text-align: center; line-height: 160px; font-size: 14px; color: #888;">
-                            <img th:if="${resume.photoPath}"
-                                 th:src="${absolutePhotoUri}"
-                                 style="width: 120px; height: 160px; object-fit: cover; display: block;"
-                                 alt="증명사진">
-                            <span th:unless="${resume.photoPath}">사진 없음</span>
-                        </div>
-                    </td>
-                    <td style="width: auto; border-bottom: none; padding: 0;">
-                        <table class="table" style="width: 100%; margin-top: 0;">
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">지원 분야</th><td th:text="${resume.title}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">성명</th><td th:text="${resume.name}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">생년월일</th><td th:text="${resume.birthDate}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">주소</th><td th:text="${resume.address}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">전화</th><td th:text="${resume.phone}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">이메일</th><td th:text="${resume.email}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">성별</th><td th:text="${resume.gender}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">긴급 연락처</th><td th:text="${resume.personalContact}"></td></tr>
-                            <tr><th style="width: 30%; background-color: #f7f7f7;">공개 여부</th>
-                                <td th:styleappend="${resume.isPublic} ? 'color: var(--color-cta-green); font-weight: 600;' : 'color: var(--color-danger); font-weight: 600;'"
-                                    th:text="${resume.isPublic} ? '✅ 공개됨' : '🔒 비공개'">
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </th:block>
-
-        <div th:unless="${isDocxDownload}" style="display: flex; gap: 40px;">
+        <div style="display: flex; gap: 40px;">
             <div style="flex-shrink: 0;">
                 <th:block th:if="${resume.photoPath}">
                     <img th:src="@{${resume.photoPath}}"
@@ -98,7 +60,6 @@
         </div>
     </div>
 
-
     <div class="card detail-section">
         <h3>■ 병역 사항</h3>
         <table class="table" style="width: 100%; max-width: 600px; margin-top: 0;">
@@ -115,110 +76,22 @@
 
     <div class="card detail-section">
         <h3>■ 학력 사항</h3>
-        <div th:unless="${isDocxDownload}" id="educationTableContainer" class="json-table-container"></div>
-
-        <div th:if="${isDocxDownload}">
-            <table class="table" style="table-layout: auto; margin-top: 0; width: 100%;" th:if="${!#lists.isEmpty(educationList)}">
-                <thead>
-                <tr>
-                    <th style="width: 25%;">학교명</th>
-                    <th style="width: 20%;">입학일</th>
-                    <th style="width: 20%;">졸업일</th>
-                    <th style="width: 20%;">전공</th>
-                    <th style="width: 15%;">비고</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="edu : ${educationList}">
-                    <td th:text="${edu.schoolName}"></td>
-                    <td th:text="${edu.startDate}"></td>
-                    <td th:text="${edu.endDate}"></td>
-                    <td th:text="${edu.major}"></td>
-                    <td th:text="${edu.notes}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <p th:unless="${!#lists.isEmpty(educationList)}" class="muted" style="margin: 0; padding: 10px;">작성된 항목이 없습니다.</p>
-        </div>
+        <div id="educationTableContainer" class="json-table-container"></div>
     </div>
 
     <div class="card detail-section">
         <h3>■ 경력 사항</h3>
-        <div th:unless="${isDocxDownload}" id="experienceTableContainer" class="json-table-container"></div>
-
-        <div th:if="${isDocxDownload}">
-            <table class="table" style="table-layout: auto; margin-top: 0; width: 100%;" th:if="${!#lists.isEmpty(experienceList)}">
-                <thead>
-                <tr>
-                    <th style="width: 25%;">회사명/직위</th>
-                    <th style="width: 15%;">시작일</th>
-                    <th style="width: 15%;">종료일</th>
-                    <th style="width: 45%;">담당 업무</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="exp : ${experienceList}">
-                    <td th:text="${exp.companyName}"></td>
-                    <td th:text="${exp.startDate}"></td>
-                    <td th:text="${exp.endDate}"></td>
-                    <td th:text="${exp.responsibility}" style="white-space: pre-wrap;"></td>
-                </tr>
-                </tbody>
-            </table>
-            <p th:unless="${!#lists.isEmpty(experienceList)}" class="muted" style="margin: 0; padding: 10px;">작성된 항목이 없습니다.</p>
-        </div>
+        <div id="experienceTableContainer" class="json-table-container"></div>
     </div>
 
     <div class="card detail-section">
         <h3>■ 자격증/면허증</h3>
-        <div th:unless="${isDocxDownload}" id="certificateTableContainer" class="json-table-container"></div>
-
-        <div th:if="${isDocxDownload}">
-            <table class="table" style="table-layout: auto; margin-top: 0; width: 100%;" th:if="${!#lists.isEmpty(certificationList)}">
-                <thead>
-                <tr>
-                    <th style="width: 40%;">자격증명</th>
-                    <th style="width: 30%;">취득일</th>
-                    <th style="width: 30%;">발행처</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="cert : ${certificationList}">
-                    <td th:text="${cert.certificateName}"></td>
-                    <td th:text="${cert.acquisitionDate}"></td>
-                    <td th:text="${cert.publisher}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <p th:unless="${!#lists.isEmpty(certificationList)}" class="muted" style="margin: 0; padding: 10px;">작성된 항목이 없습니다.</p>
-        </div>
+        <div id="certificateTableContainer" class="json-table-container"></div>
     </div>
 
     <div class="card detail-section">
         <h3>■ 대외활동 경험</h3>
-        <div th:unless="${isDocxDownload}" id="activityTableContainer" class="json-table-container"></div>
-
-        <div th:if="${isDocxDownload}">
-            <table class="table" style="table-layout: auto; margin-top: 0; width: 100%;" th:if="${!#lists.isEmpty(activityList)}">
-                <thead>
-                <tr>
-                    <th style="width: 25%;">활동명</th>
-                    <th style="width: 20%;">시작일</th>
-                    <th style="width: 20%;">종료일</th>
-                    <th style="width: 35%;">기관명/주최 및 내용</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="activity : ${activityList}">
-                    <td th:text="${activity.activityName}"></td>
-                    <td th:text="${activity.startDate}"></td>
-                    <td th:text="${activity.endDate}"></td>
-                    <td th:text="${activity.organization + (activity.details != null ? ' (' + activity.details + ')' : '')}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <p th:unless="${!#lists.isEmpty(activityList)}" class="muted" style="margin: 0; padding: 10px;">작성된 항목이 없습니다.</p>
-        </div>
+        <div id="activityTableContainer" class="json-table-container"></div>
     </div>
 
     <div class="card detail-section">
@@ -226,7 +99,7 @@
         <pre class="content-text" th:text="${resume.selfIntroduction}"></pre>
     </div>
 
-    <script th:unless="${isDocxDownload}" th:inline="javascript">
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
             // Thymeleaf에서 JSON 문자열을 JavaScript String 리터럴로 안전하게 가져옵니다.
             const educationJson = /*[[${resume.educationHistory}]]*/ '[]';

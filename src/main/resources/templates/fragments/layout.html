@@ -14,6 +14,9 @@
         <div class="nav-right">
             <a th:href="@{/board}" class="nav-link">자유 게시판</a> <th:block sec:authorize="isAuthenticated()">
             <span class="nav-link" th:text="${#authentication.name} + '님'">사용자명님</span> <a th:href="@{/resumes}" class="nav-link">내 이력서</a>
+
+            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/companies}" class="nav-link">기업 승인 관리</a>
+
             <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/resumes}" class="nav-link active-link" style="font-weight: bold;">관리자</a>
 
             <a th:if="${#authorization.expression('hasRole(''COMPANY'')')}" th:href="@{/company/resumes}" class="nav-link active-link" style="font-weight: bold;">기업 대시보드</a>

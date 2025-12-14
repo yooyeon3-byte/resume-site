@@ -28,7 +28,6 @@
             </div>
 
             <div class="card-actions">
-                <a th:href="@{'/resumes/' + ${resume.id} + '/download-docx'}" class="btn-primary small btn-action-width" style="width: 80px;">DOCX</a>
                 <a th:href="@{'/resumes/' + ${resume.id} + '/edit'}" class="btn-outline small btn-action-width">수정</a>
                 <form th:action="@{'/resumes/' + ${resume.id} + '/delete'}" method="post"
                       onsubmit="return confirm('삭제할까요?');">
