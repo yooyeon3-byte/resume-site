@@ -2,7 +2,7 @@ package com.example.resumesite.controller;
 
 import com.example.resumesite.domain.User;
 import com.example.resumesite.service.ResumeService;
-import com.example.resumesite.service.UserService; // UserService import 유지
+import com.example.resumesite.service.UserService;
 import com.example.resumesite.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,7 @@ public class AdminController {
 
     private final ResumeService resumeService;
     private final UserRepository userRepository;
-    private final UserService userService; // ⭐ 수정: UserService를 final 필드로 선언 및 주입
+    private final UserService userService;
 
     // 기존 allResumes 메소드...
     @GetMapping("/resumes")
@@ -44,13 +44,25 @@ public class AdminController {
 
     // ⭐ 기업 승인 처리 (POST 요청) - 경로: /admin/companies/{id}/approve
     @PostMapping("/companies/{id}/approve")
-    public String approveCompany(@PathVariable Long id) { // ⭐ 수정: UserService 매개변수 제거
+    public String approveCompany(@PathVariable Long id) {
         try {
-            userService.approveCompany(id); // ⭐ 수정: 주입된 필드(this.userService) 사용
+            userService.approveCompany(id);
         } catch (Exception e) {
             // 실패 처리
             return "redirect:/admin/companies?error=" + e.getMessage();
         }
         return "redirect:/admin/companies?success";
+    }
+
+    // ⭐ 추가: 기업 승인 거절/삭제 처리 (POST 요청) - 경로: /admin/companies/{id}/disapprove
+    @PostMapping("/companies/{id}/disapprove")
+    public String disapproveCompany(@PathVariable Long id) {
+        try {
+            userService.disapproveCompany(id);
+        } catch (Exception e) {
+            // 실패 처리
+            return "redirect:/admin/companies?error=" + e.getMessage();
+        }
+        return "redirect:/admin/companies?disapproved";
     }
 }

@@ -9,6 +9,14 @@
         <a th:href="@{/admin/resumes}" class="btn-outline small">이력서 목록으로</a>
     </div>
 
+    <div th:if="${param.success}" class="error" style="background: #e6ffed; border-left: 4px solid #10b981; color: #10b981;">
+        기업 승인이 완료되었습니다.
+    </div>
+    <div th:if="${param.disapproved}" class="error" style="background: #fff4e6; border-left: 4px solid orange; color: #6c757d;">
+        기업 승인 요청이 거절(계정 삭제)되었습니다.
+    </div>
+    <div th:if="${param.error}" class="error" th:text="'오류: ' + ${param.error}"></div>
+
     <div th:if="${#lists.isEmpty(pendingUsers)}" class="empty">
         현재 승인 대기 중인 기업 사용자가 없습니다.
     </div>
@@ -33,8 +41,15 @@
             <td><span class="muted" style="color: orange;">승인 대기</span></td>
             <td>
                 <form th:action="@{'/admin/companies/' + ${user.id} + '/approve'}" method="post"
-                      onsubmit="return confirm('이 기업을 COMPANY 역할로 승인하시겠습니까?');">
+                      onsubmit="return confirm('이 기업을 COMPANY 역할로 승인하시겠습니까?');"
+                      style="display: inline-block; margin-right: 5px;">
                     <button type="submit" class="btn-primary small">승인</button>
+                </form>
+
+                <form th:action="@{'/admin/companies/' + ${user.id} + '/disapprove'}" method="post"
+                      onsubmit="return confirm('이 기업의 승인 요청을 거절하고 계정을 삭제하시겠습니까?');"
+                      style="display: inline-block;">
+                    <button type="submit" class="btn-danger small">취소/삭제</button>
                 </form>
             </td>
         </tr>

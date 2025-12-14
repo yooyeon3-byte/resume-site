@@ -61,4 +61,17 @@ public class UserService {
         user.setRole(User.Role.COMPANY);
         // 트랜잭션(@Transactional) 덕분에 별도의 save 호출 없이 변경사항이 반영됩니다.
     }
+
+    // ⭐ 추가: 관리자가 PENDING 유저를 거절/삭제하는 메소드
+    public void disapproveCompany(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        if (user.getRole() != User.Role.PENDING) {
+            throw new IllegalStateException("승인 대기 중인 사용자만 거절/삭제할 수 있습니다.");
+        }
+
+        // PENDING 상태의 사용자 계정을 삭제
+        userRepository.delete(user);
+    }
 }
